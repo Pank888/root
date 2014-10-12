@@ -29,7 +29,7 @@ autoload(M);
 
 M.on('mount', function (parent) {
 
-	U.log('mounting M.');
+	U.log('M mounted');
 
 	M.use(errorHandler);
 
@@ -37,7 +37,9 @@ M.on('mount', function (parent) {
 		res.redirect(M.get('defaultHost')[M.get('env')]);
 	});
 
-	M.listen(M.get('port'));
+	M.listen(M.get('port'), function() {
+		U.log( 'M listening to port:', M.get('port') );
+	});
 });
 
 module.exports = M;
