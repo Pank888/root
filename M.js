@@ -22,13 +22,12 @@ M.set('dirs', {
 
 M.set('defaultHost', {
 		development: 'http://localhost:' + M.get('port')
-	,	production : 'https://jaeh.at/'
+	, production : 'https://jaeh.at/'
 } );
 
 autoload(M);
 
 M.on('mount', function (parent) {
-
 	U.log('M mounted');
 
 	M.use(errorHandler);
