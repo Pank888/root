@@ -2,6 +2,7 @@
 
 var express      = require('express')
   , fs           = require('fs')
+  , async        = require('async')
   , vhost        = require('vhost')
   , path         = require('path')
   , lib          = path.join(__dirname, 'lib')
@@ -9,11 +10,22 @@ var express      = require('express')
   , errorHandler = require( path.join(lib, 'errorHandler') )
   , log          = require('magic-log')
 
-  , M = express()
+  , magic        = {}
 ;
 
 function init(cb) {
-    
+  async.waterfall([
+      magic.spawn
+    , magic.autoload
+    , magic.finish
+  ],
+    magic.done
+  );
+}
+
+magic.spawn = function(cb) {
+  var M = express();
+  
   //default env is development
   M.set('env', ( M.get('env') || 'development' ) );
 
@@ -28,24 +40,40 @@ function init(cb) {
     , production : 'https://jaeh.at/'
   } );
 
-  log('M mounted, dirs = ');
+  log('M spawned, env = ' + M.get('env'));
+  cb(null, M);
+}
 
-  autoload(M, function(err, results) {
-    M.use(errorHandler);
+magic.autoload = function (M, cb) {  
+  autoload(M, function (err, results) {
+    log(results);
+    cb(err, M);
+  } );
+}
 
-    M.use( function(req, res, next) {
-      res.redirect(M.get('defaultHost')[M.get('env')]);
-    } );
+magic.finish = function (M, cb) {
+  M.use(errorHandler);
 
-    M.listen( M.get('port'), function() {
-      log( 'M listening to port:' + M.get('port') );
-    
-      if ( typeof cb === 'function' ) {
-        cb(err, results);
-      }
-    } );
-  });
-  return M;
+  M.use( function(req, res, next) {
+    res.redirect(M.get('defaultHost')[M.get('env')]);
+  } );
+
+  M.listen( M.get('port'), function() {
+    log( 'M listening to port:' + M.get('port') );
+  
+    if ( typeof cb === 'function' ) {
+      cb(null, M);
+    }
+  } );
+}
+
+magic.done = function (err, M) {
+  if ( err ) { return log(err, 'error'); }
+  log('Magic done.');
+  
+  if ( typeof cb === 'function') {
+    cb(null, M);
+  }
 }
 
 module.exports = init;
