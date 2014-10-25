@@ -36,7 +36,7 @@ magic.spawn = function(cb) {
   } );
 
   M.set('defaultHost', {
-      development: 'http://localhost:' + M.get('port')
+      development: 'http://jaeh.test:' + M.get('port')
     , production : 'https://jaeh.at/'
   } );
 
@@ -54,7 +54,7 @@ magic.autoload = function (M, cb) {
 magic.finish = function (M, cb) {
   M.use(errorHandler);
 
-  M.use( function(req, res, next) {
+  M.use( function(err, req, res, next) {
     res.redirect(M.get('defaultHost')[M.get('env')]);
   } );
 
