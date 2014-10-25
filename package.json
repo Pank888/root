@@ -20,5 +20,16 @@
   "repository": {
     "type": "git",
     "url": "http://github.com/jaeh/express-magic.git"
-  }
+  },
+  "readme": "Express Magic: M.\n=======\n",
+  "readmeFilename": "README.md",
+  "description": "Express Magic: M. =======",
+  "bugs": {
+    "url": "https://github.com/jaeh/express-magic/issues"
+  },
+  "homepage": "https://github.com/jaeh/express-magic",
+  "_id": "express-magic@0.0.1",
+  "_shasum": "1f88bd52ffb19a6a6de1bf6ed7e14007e2d5dc40",
+  "_resolved": "git+https://github.com/express-magic/express-magic#6525b023050534f183178b2fb34949aa3484386b",
+  "_from": "express-magic@git+https://github.com/express-magic/express-magic"
 }
