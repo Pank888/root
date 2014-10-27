@@ -8,6 +8,7 @@ var express      = require('express')
   , lib          = path.join(__dirname, 'lib')
   , autoload     = require( path.join(lib, 'autoload') )
   , errorHandler = require( path.join(lib, 'errorHandler') )
+  , config       = require( path.join(process.cwd(), 'config') )
   , log          = require('magic-log')
 
   , magic        = {}
@@ -35,10 +36,7 @@ magic.spawn = function(cb) {
     'hosts' : path.join( process.cwd(), 'hosts' )
   } );
 
-  M.set('defaultHost', {
-      development: 'http://jaeh.test:' + M.get('port')
-    , production : 'https://jaeh.at/'
-  } );
+  M.set('defaultHost', config.defaults[M.get('env')].host );
 
   log('M spawned, env = ' + M.get('env'));
   cb(null, M);
