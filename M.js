@@ -53,7 +53,7 @@ magic.finish = function (M, cb) {
   M.use(errorHandler);
 
   M.use( function(err, req, res, next) {
-    res.redirect(M.get('defaultHost')[M.get('env')]);
+    res.redirect(M.get('defaultHost'));
   } );
 
   M.listen( M.get('port'), function() {
