@@ -10,7 +10,7 @@ var express      = require('express')
   , errorHandler = require( path.join(lib, 'errorHandler') )
   , config       = require( path.join(process.cwd(), 'config') )
   , log          = require('magic-log')
-
+  , menu          = require('magic-menu')
   , magic        = {}
 ;
 

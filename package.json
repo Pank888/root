@@ -11,9 +11,11 @@
     "debug": "~2.0.0",
     "express": "~4.9.0",
     "jade": "~1.6.0",
+    "magic-db": "git://github.com/express-magic/magic-db",
     "magic-log": "express-magic/magic-log",
     "morgan": "~1.3.0",
     "serve-favicon": "~2.1.3",
+    "sqlite3": "^3.0.2",
     "stylus": "0.42.3",
     "vhost": "^3.0.0"
   },
