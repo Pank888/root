@@ -1,32 +1,20 @@
 'use strict';
 
-var express      = require('express')
-  , fs           = require('fs')
-  , async        = require('async')
-  , vhost        = require('vhost')
-  , path         = require('path')
-  , lib          = path.join(__dirname, 'lib')
-  , autoload     = require( path.join(lib, 'autoload') )
-  , errorHandler = require( path.join(lib, 'errorHandler') )
-  , config       = require( path.join(process.cwd(), 'config') )
-  , log          = require('magic-log')
-  , menu          = require('magic-menu')
-  , magic        = {}
+var express = require('express')
+  , fs      = require('fs')
+  , async   = require('async')
+  , vhost   = require('vhost')
+  , path    = require('path')
+  , hosts   = require('magic-hosts')
+  , log     = require('magic-log')
+  , menu    = require('magic-menu')
+  , config  = require( path.join(process.cwd(), 'config') )
+  , magic   = {}
 ;
-
-function init(cb) {
-  async.waterfall([
-      magic.spawn
-    , magic.autoload
-    , magic.finish
-  ],
-    magic.done
-  );
-}
 
 magic.spawn = function(cb) {
   var M = express();
-  
+
   //default env is development
   M.set('env', ( M.get('env') || 'development' ) );
 
@@ -43,22 +31,17 @@ magic.spawn = function(cb) {
 }
 
 magic.autoload = function (M, cb) {  
-  autoload(M, function (err, results) {
+  log('autoload mounts');
+  hosts.mount(M, function (err, results) {
     log(results);
     cb(err, M);
   } );
 }
 
-magic.finish = function (M, cb) {
-  M.use(errorHandler);
-
-  M.use( function(err, req, res, next) {
-    res.redirect(M.get('defaultHost'));
-  } );
-
+magic.listen = function (M, cb) {
   M.listen( M.get('port'), function() {
     log( 'M listening to port:' + M.get('port') );
-  
+
     if ( typeof cb === 'function' ) {
       cb(null, M);
     }
@@ -74,4 +57,12 @@ magic.done = function (err, M) {
   }
 }
 
-module.exports = init;
+module.exports = function init(cb) {
+  async.waterfall([
+      magic.spawn
+    , magic.autoload
+    , magic.listen
+  ],
+    magic.done
+  );
+}
