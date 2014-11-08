@@ -21,9 +21,5 @@
     "sqlite3": "^3.0.2",
     "stylus": "0.42.3",
     "vhost": "^3.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/jaeh/express-magic.git"
   }
 }

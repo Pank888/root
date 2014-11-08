@@ -24,8 +24,6 @@ magic.spawn = function(cb) {
     'hosts' : path.join( process.cwd(), 'hosts' )
   } );
 
-  M.set('defaultHost', config.defaults[M.get('env')].host );
-
   log('M spawned, env = ' + M.get('env'));
   cb(null, M);
 }
@@ -50,7 +48,7 @@ magic.listen = function (M, cb) {
 
 magic.done = function (err, M) {
   if ( err ) { return log(err, 'error'); }
-  log('Magic done.');
+  log('Magic started.');
   
   if ( typeof cb === 'function') {
     cb(null, M);
