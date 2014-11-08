@@ -1,0 +1,11 @@
+{
+  "name": "express-router",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./router.js",
+  "dependencies": {
+    "express": "~4.9.0",
+    "magic-log": "express-magic/magic-log",
+    "magic-view": "git://github.com/express-magic/magic-view"
+  }
+}
