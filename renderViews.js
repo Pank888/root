@@ -2,7 +2,7 @@
 
 var log = require('magic-log');
 
-exports.page = function renderPage(data, req, res, next) {
+exports.renderPage = function renderPage(data, req, res, next) {
   var page     = ( req.params.page || 'index' )
     , template = 'pages/' + page
     , app      = req.app
