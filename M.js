@@ -3,11 +3,9 @@
 var express = require('express')
   , fs      = require('fs')
   , async   = require('async')
-  , vhost   = require('vhost')
   , path    = require('path')
   , hosts   = require('magic-hosts')
   , log     = require('magic-log')
-  , menu    = require('magic-menu')
   , config  = require( path.join(process.cwd(), 'config') )
   , magic   = {}
 ;
