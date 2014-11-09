@@ -7,6 +7,6 @@
     "async": "^0.9.0",
     "express": "~4.9.0",
     "magic-hosts": "git://github.com/express-magic/magic-hosts",
-    "magic-log": "express-magic/magic-log"
+    "magic-log": "git://github.com/express-magic/magic-log"
   }
 }
