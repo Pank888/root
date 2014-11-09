@@ -1,5 +1,4 @@
 'use strict';
-
 var express = require('express')
   , fs      = require('fs')
   , async   = require('async')
@@ -14,7 +13,7 @@ magic.spawn = function(cb) {
   var M = express();
 
   //default env is development
-  M.set('env', ( M.get('env') || 'development' ) );
+  M.set('env', ( M.get('env') || 'production' ) );
 
   M.set('port', ( process.env.PORT || 5000) );
 
@@ -35,6 +34,15 @@ magic.autoload = function (M, cb) {
 }
 
 magic.listen = function (M, cb) {
+  M.use(function (req, res, next) {
+    var env     = M.get('env') || 'production'
+      , defHost = config.defaults[env].host || false
+    ;
+    if ( defHost ) {
+      res.redirect(defHost);
+    }
+  });
+  
   M.listen( M.get('port'), function() {
     log( 'M listening to port:' + M.get('port') );
 
