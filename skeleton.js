@@ -13,6 +13,7 @@ var db           = require('magic-db')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
   , menu         = require('magic-menu')
+  , auth         = require('magic-auth')
   , path         = require('path')
   , R            = require('magic-router')
   , sslRedirect  = require('magic-ssl')
@@ -20,48 +21,65 @@ var db           = require('magic-db')
 
 module.exports = function(S, dir) {
   var css         = ( S.get('css') || stylus )
-    , faviconPath = path.join(dir, 'public', 'favicon.ico')
-    , env         = S.get('env') || 'development'
-    , routes      = S.get('routes')
+    , env         = S.get('env') || 'production'
     , dbConf      = S.get('db') || false
+    , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = S.get('dirs') || {
         public: path.join(dir, 'public')
       , views : path.join(dir, 'views')
     }
   ;
-  if ( dbConf ) {
-    S.set('schema', db.init(dbConf) );
-  }
 
   if ( ! S.get('allowHttp') && S.get('env') === 'production' ) {
    // S.use(sslRedirect);
   }
 
+  //set expiry headers
   S.use(headers);
 
-  if ( fs.existsSync(faviconPath) ) {
+  //fs.existsSync only gets called once
+  if ( S.get('faviconExists') || fs.existsSync(faviconPath) ) {
+    S.set('faviconExists', true);
     S.use( favicon(faviconPath) );
   }
 
   S.set('views', dirs.views);
   S.set('view engine', S.get('view engine') || 'jade');
 
-  S.use(compression({
-    threshold: 128
-  }));
+  S.use(compression({ threshold: 128 }));
 
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
-  if ( S.get('useMenu') ) {
-    S.use(function(req, res, next) {
-      menu(S, req, res , next);
-    } );
-  }
+  //load the menu for the current host
+  S.use(function(req, res, next) {
+    menu(S, req, res , next);
+  } );
 
+  //logging
   S.use(morgan('combined'));
 
-  if ( routes ) {
+  //if host sets bodyparser to true, init it
+  if ( S.get('bodyParser') ) {
+    S.use(bodyParser.json());
+    S.use(bodyParser.urlencoded({ extended: false }));
+  }
+  
+  //if host sets cookieparser to true, init it:
+  if ( S.get('cookieParser') ) {
+    S.use(cookieParser());
+  }
+  
+  if ( S.get('useAuth') ) {
+    S.use(function (req, res, next) {
+       auth.routes(S, req, res, next);
+    });
+  }
+
+  //load host specific routes
+  if ( S.get('routes') ) {
+    let routes = S.get('routes');
+
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
       for (var route in routes ) {
         S.use(route);
@@ -71,13 +89,6 @@ module.exports = function(S, dir) {
     }
   }
 
-  if ( S.get('bodyParser') ) {
-    S.use(bodyParser.json());
-    S.use(bodyParser.urlencoded({ extended: false }));
-  }
-  if ( S.get('cookieParser') ) {
-    S.use(cookieParser());
-  }
 
   S.route('*').get(R);
   S.route('/:page').get(R);
