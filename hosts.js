@@ -6,8 +6,6 @@ var fs          = require('fs')
   , vhost       = require('vhost')
   , log         = require('magic-log')
   , skeleton    = require('magic-skeleton')
-  , db          = require('magic-db')
-  , users       = require('magic-users')
   , cwd         = process.cwd()
   , hostRootDir = path.join(cwd, 'hosts')
   , M = null
@@ -18,8 +16,8 @@ exports.mount = function autoload(magic, cb) {
   M = magic;
 
   async.waterfall([
-      exports.findHosts
-    , mountHosts
+    exports.findHosts
+  , mountHosts
   ], cb);
 }
 
@@ -43,9 +41,7 @@ function hostFilter(file, cb) {
 }
 
 function mountHosts(args, cb) {
-  async.map(
-      args.hosts
-    , host.mount
+  async.map( args.hosts, host.mount
     , function (err) {
       if ( typeof cb === 'function' ) {
         cb(err, args);
@@ -66,9 +62,6 @@ host.mount = function hostMount(host, cb) {
   if ( ! hosts ) { return cb('config.js needs an attribute named hosts.'); }
 
   hosts.forEach( function (host) {
-    // init db
-    // cache pages in db
-    // init user control
     M.use( vhost(host, S) );
     log('vhosts started for subhost ' + host);
   } );
