@@ -6,8 +6,10 @@
   "dependencies": {
     "async": "^0.9.0",
     "express": "~4.9.0",
+    "magic-auth": "git://github.com/express-magic/magic-auth",
     "magic-db": "git://github.com/express-magic/magic-db",
     "magic-hosts": "git://github.com/express-magic/magic-hosts",
-    "magic-log": "git://github.com/express-magic/magic-log"
+    "magic-log": "git://github.com/express-magic/magic-log",
+    "magic-users": "git://github.com/express-magic/magic-users"
   }
 }

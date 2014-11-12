@@ -7,6 +7,7 @@ var express = require('express')
   , hosts   = require('magic-hosts')
   , log     = require('magic-log')
   , db      = require('magic-db')
+  , auth    = require('magic-auth')
   , users   = require('magic-users')
   , magic   = {}
   , env     = ( M.get('env') || 'production' )
@@ -31,7 +32,8 @@ magic.spawn = function(cb) {
     
     M.use( function(req, res, next) {
       //creates the user database models
-      users.init(schema, req, res, next);
+      users.init(schema, next);
+      auth.init(schema, next);
     } );
   }
 
