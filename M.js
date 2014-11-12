@@ -72,5 +72,6 @@ module.exports = function init(cb) {
       if ( typeof cb === 'function') {
         cb(null, M);
       }
+    }
   );
 }
