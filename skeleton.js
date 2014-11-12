@@ -19,7 +19,7 @@ var db           = require('magic-db')
   , sslRedirect  = require('magic-ssl')
 ;
 
-module.exports = function(S, dir) {
+module.exports = function(M, S, dir) {
   var css         = ( S.get('css') || stylus )
     , env         = S.get('env') || 'production'
     , dbConf      = S.get('db') || false
@@ -55,7 +55,14 @@ module.exports = function(S, dir) {
   S.use(function(req, res, next) {
     menu(S, req, res , next);
   } );
+  
+  if ( S.get('db') ) {
+    let dbConf = S.get('db')
+      , schema = db(dbConf);
+    ;
 
+    S.set('schema', schema);
+  }
   //logging
   S.use(morgan('combined'));
 
