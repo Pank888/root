@@ -7,6 +7,7 @@ var express = require('express')
   , hosts   = require('magic-hosts')
   , log     = require('magic-log')
   , db      = require('magic-db')
+  , users   = require('magic-users')
   , magic   = {}
   , env     = ( M.get('env') || 'production' )
   , cwd     = process.cwd()
@@ -25,7 +26,13 @@ magic.spawn = function(cb) {
   } );
 
   if ( conf && conf.db ) {
-    M.set('db', config.defaults[env].db );
+    let schema = db.init(conf.db);
+    M.set('schema', schema);
+    
+    M.use( function(req, res, next) {
+      //creates the user database models
+      users.init(schema, req, res, next);
+    } );
   }
 
   log('M spawned, env = ' + M.get('env'));
@@ -48,21 +55,8 @@ magic.listen = function (M, cb) {
   });
   
   M.listen( M.get('port'), function() {
-    log( 'M listening to port:' + M.get('port') );
-
-    if ( typeof cb === 'function' ) {
-      cb(null, M);
-    }
+    if ( typeof cb === 'function' ) { cb(null, M); }
   } );
-}
-
-magic.done = function (err, M) {
-  if ( err ) { return log(err, 'error'); }
-  log('Magic started.');
-  
-  if ( typeof cb === 'function') {
-    cb(null, M);
-  }
 }
 
 module.exports = function init(cb) {
@@ -70,7 +64,13 @@ module.exports = function init(cb) {
       magic.spawn
     , magic.autoload
     , magic.listen
-  ],
-    magic.done
+  ]
+  , function (err, M) {
+      if ( err ) { log(err, 'error'); }
+      log( 'Magic listening to port:' + M.get('port') );
+
+      if ( typeof cb === 'function') {
+        cb(null, M);
+      }
   );
 }
