@@ -53,7 +53,7 @@ function mountHosts(args, cb) {
 host.mount = function hostMount(host, cb) {
   var hostDir = path.join(hostRootDir, host)
     , hostApp = require(path.join(hostDir, 'H.js'))
-    , S       = skeleton(hostApp, hostDir)
+    , S       = skeleton(M, hostApp, hostDir)
     , config  = require( path.join(hostDir, 'config') )
     , env     = ( S.get('env') || 'production' )
     , hosts   = ( config.hosts[env] ? config.hosts[env] : [] )
