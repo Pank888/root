@@ -52,7 +52,7 @@ magic.autoload = function (M, cb) {
 magic.listen = function (M, cb) {
   M.use(function (req, res, next) {
     if ( conf.host ) {
-      res.redirect(defHost);
+      res.redirect(conf.host);
     }
   });
   
@@ -77,3 +77,4 @@ module.exports = function init(cb) {
     }
   );
 }
+
