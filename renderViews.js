@@ -1,5 +1,4 @@
 'use strict';
-
 var log = require('magic-log');
 
 exports.renderPage = function renderPage(data, req, res, next) {
@@ -15,7 +14,7 @@ exports.renderPage = function renderPage(data, req, res, next) {
 
   res.render(template, data, function (err, html) {
     if ( err ) {
-      log(err, 'error');
+      log.error(err);
       if ( req.params.page === '404' ) {
         return next(err, req, res, next);
       }
