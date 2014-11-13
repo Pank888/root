@@ -19,15 +19,10 @@ exports.render = {
 
     res.render(template, data, function (err, html) {
       if ( err ) { log.error(err); }
+
       if ( ! html ) {
-        if ( page === '404' ) {
-          log.error('magic-views tried loading a 404.jade template from a views dir and failed.');
-          return next(err, req, res, next);
-        }
-        if ( page === 'index' ) {
-          log.error('magic-views tried to render an index.jade template from a views dir and failed.');
-        }
-        return res.redirect('/404');
+        let err = {status:404};
+        return next(err, req, res, next);
       }
 
       pages[page] = html; 
