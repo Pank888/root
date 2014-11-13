@@ -51,17 +51,17 @@ module.exports = function(M, S, dir) {
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
-  //load the menu for the current host
-  S.use(function(req, res, next) {
-    menu(S, req, res , next);
-  } );
-  
   if ( S.get('db') ) {
     let dbConf = S.get('db')
       , schema = db(dbConf);
     ;
 
     S.set('schema', schema);
+    
+    //load the menu for the current host
+    S.use(function(req, res, next) {
+      menu(S, req, res , next);
+    } );
   }
   //logging
   S.use(morgan('combined'));
