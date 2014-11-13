@@ -68,8 +68,8 @@ module.exports = function init(cb) {
     , magic.listen
   ]
   , function (err, M) {
-      if ( err ) { log(err, 'error'); }
-      log( 'Magic listening to port:' + M.get('port') );
+      if ( err ) { log.error(err); }
+      log.success( 'Magic listening to port:', M.get('port') );
 
       if ( typeof cb === 'function') {
         cb(null, M);
