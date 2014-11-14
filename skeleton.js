@@ -14,7 +14,7 @@ var db           = require('magic-db')
   , log          = require('magic-log')
   , auth         = require('magic-auth')
   , path         = require('path')
-  , R            = require('magic-router')
+  , router       = require('magic-router')
   , sslRedirect  = require('magic-ssl')
 ;
 
@@ -95,10 +95,8 @@ module.exports = function(M, S, dir) {
     }
   }
   
-  S.use('/', R);
-  S.use('/:page', R);
-
-  S.use('*', errorHandler);
+  S.use(router);
+  S.use(errorHandler);
 
   return S;
 }
