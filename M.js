@@ -51,7 +51,12 @@ magic.autoload = function (M, cb) {
 
 magic.listen = function (M, cb) {
   M.use(function (req, res, next) {
-    log('final error handler');
+    //TODO: Render this as a global 404 error page
+    if ( conf.host ) {
+      log('magic error handler redirecting to defaulthost:', conf.host);
+      return res.redirect(conf.host);
+    }
+    log('final error handler, no default host found');
     res.send('final error handler');
   });
   
