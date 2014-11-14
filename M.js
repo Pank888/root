@@ -29,11 +29,12 @@ magic.spawn = function(cb) {
   if ( conf && conf.db ) {
     let schema = db(conf.db);
     M.set('schema', schema);
-    
+
     M.use( function(req, res, next) {
       //creates the user database models
-      users.init(schema, next);
-      auth.init(schema, next);
+      users.init(schema);
+      auth.init(schema);
+      next();
     } );
   }
 
@@ -44,16 +45,14 @@ magic.spawn = function(cb) {
 magic.autoload = function (M, cb) {  
   log('autoload mounts');
   hosts.mount(M, function (err, results) {
-    log(results);
     cb(err, M);
   } );
 }
 
 magic.listen = function (M, cb) {
   M.use(function (req, res, next) {
-    if ( conf.host ) {
-      res.redirect(conf.host);
-    }
+    log('final error handler');
+    res.send('final error handler');
   });
   
   M.listen( M.get('port'), function() {
@@ -68,7 +67,7 @@ module.exports = function init(cb) {
     , magic.listen
   ]
   , function (err, M) {
-      if ( err ) { log.error(err); }
+      if ( err ) { log.error('magic startup error:', err); }
       log.success( 'Magic listening to port:', M.get('port') );
 
       if ( typeof cb === 'function') {
@@ -77,4 +76,3 @@ module.exports = function init(cb) {
     }
   );
 }
-
