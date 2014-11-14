@@ -4,29 +4,18 @@ var log = require('magic-log');
 exports.render = {
   page: function renderPage(req, res, next) {
     var page     = ( req.params.page || 'index' )
-      , template = 'pages/' + page
       , app      = req.app
+      , template = 'pages/' + page
       , pages    = app.get('pages') || []
       , data     = {}
+      , views    = app.get('views')
     ;
-
-    log('Rendering Page: ', page);
-
-    //on first request the html gets cached
-    if ( pages && pages[page] ) {
-      return res.send(pages[page]);
-    }
+    log('Rendering Page:', page, 'with template:', template);
 
     res.render(template, data, function (err, html) {
-      if ( err ) { log.error(err); }
+      if ( err ) { return next(err, req, res, next); }
+      if ( ! html ) { return next(req, res, next); }
 
-      if ( ! html ) {
-        let err = {status:404};
-        return next(err, req, res, next);
-      }
-
-      pages[page] = html; 
-      app.set('pages', pages); //caching pages
       res.send(html);
     });
   }
