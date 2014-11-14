@@ -12,7 +12,6 @@ var db           = require('magic-db')
   , errorHandler = require('magic-errorHandler')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
-  , menu         = require('magic-menu')
   , auth         = require('magic-auth')
   , path         = require('path')
   , R            = require('magic-router')
@@ -38,8 +37,12 @@ module.exports = function(M, S, dir) {
   S.use(headers);
 
   //fs.existsSync only gets called once
-  if ( S.get('faviconExists') || fs.existsSync(faviconPath) ) {
-    S.set('faviconExists', true);
+  if ( ! S.get('faviconExistanceCheck') ) {
+    S.set('faviconExistanceCheck', true);
+    S.set('faviconExists', fs.existsSync(faviconPath));
+  }
+
+  if ( S.get('faviconExists') ) {
     S.use( favicon(faviconPath) );
   }
 
@@ -57,12 +60,8 @@ module.exports = function(M, S, dir) {
     ;
 
     S.set('schema', schema);
-    
-    //load the menu for the current host
-    S.use(function(req, res, next) {
-      menu(S, req, res , next);
-    } );
   }
+
   //logging
   S.use(morgan('combined'));
 
@@ -71,7 +70,7 @@ module.exports = function(M, S, dir) {
     S.use(bodyParser.json());
     S.use(bodyParser.urlencoded({ extended: false }));
   }
-  
+
   //if host sets cookieparser to true, init it:
   if ( S.get('cookieParser') ) {
     S.use(cookieParser());
@@ -95,12 +94,11 @@ module.exports = function(M, S, dir) {
       S.use( routes );
     }
   }
+  
+  S.use('/', R);
+  S.use('/:page', R);
 
-
-  S.route('*').get(R);
-  S.route('/:page').get(R);
-
-  S.use(errorHandler);
+  S.use('*', errorHandler);
 
   return S;
 }
