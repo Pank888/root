@@ -10,12 +10,12 @@ exports.render = {
       , data     = {}
       , views    = app.get('views')
     ;
+
     log('Rendering Page:', page, 'with template:', template);
 
     res.render(template, data, function (err, html) {
-      if ( err ) { return next(err, req, res, next); }
-      if ( ! html ) { return next(req, res, next); }
-
+      if ( err ) { return next(err); }
+      if ( ! html ) { return next();}
       res.send(html);
     });
   }
