@@ -94,7 +94,7 @@ module.exports = function(M, S, dir) {
       S.use( routes );
     }
   }
-  
+
   S.use(router);
   S.use(errorHandler);
 
