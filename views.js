@@ -10,8 +10,7 @@ exports.render = {
     log('magic-views', 'Rendering Page:', page);
 
     res.render(template, function (err, html) {
-      if ( err ) { return next(err); }
-      if ( ! html ) { return next();}
+      if ( err || ! html ) { return next(); }
       res.send(html);
     });
   }
