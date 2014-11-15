@@ -53,7 +53,7 @@ function mountHosts(args, cb) {
 host.mount = function hostMount(host, cb) {
   var hostDir = path.join(hostRootDir, host)
     , hostApp = require(path.join(hostDir, 'H.js'))
-    , S       = skeleton(M, hostApp, hostDir)
+    , skel       = skeleton(M, hostApp, hostDir)
     , config  = require( path.join(hostDir, 'config') )
     , env     = ( S.get('env') || 'production' )
     , hosts   = ( config.hosts[env] ? config.hosts[env] : [] )
@@ -62,7 +62,7 @@ host.mount = function hostMount(host, cb) {
   if ( ! hosts ) { return cb('config.js needs an attribute named hosts.'); }
 
   hosts.forEach( function (host) {
-    M.use( vhost(host, S) );
+    M.use( vhost(host, skel) );
     log('vhosts started for subhost ' + host);
   } );
 
