@@ -4,14 +4,7 @@ var express = require('express')
   , view    = require('magic-view')
 ;
 
-router.get('/', function(req, res, next) {
-  log.info('magic-router', '/ route called');
-  view.render.page(req, res, next);
-});
-
-router.get('/:page', function(req, res, next) {
-  log.info('magic-router', '/:page route called', req.params.page);
-  view.render.page(req, res, next);
-});
+router.get('/', view.render.page);
+router.get('/:page', view.render.page);
 
 module.exports = router;
