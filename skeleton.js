@@ -1,5 +1,4 @@
 'use strict';
-
 var db           = require('magic-db')
   , express      = require('express')
   , stylus       = require('stylus')
@@ -87,7 +86,7 @@ module.exports = function(M, S, dir) {
     let routes = S.get('routes');
 
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
-      for (var route in routes ) {
+      for (let route in routes ) {
         S.use(route);
       }
     } else if ( typeof routes === 'function' ) { 
@@ -96,7 +95,8 @@ module.exports = function(M, S, dir) {
   }
 
   S.use(router);
-  S.use(errorHandler);
+  S.use(errorHandler.handle404);
+  S.use(errorHandler.handle500);
 
   return S;
 }
