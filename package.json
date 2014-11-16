@@ -4,7 +4,7 @@
   "private": true,
   "main": "./router.js",
   "dependencies": {
-    "express": "~4.9.0",
+    "express": "4.10.2",
     "magic-log": "express-magic/magic-log",
     "magic-view": "git://github.com/express-magic/magic-view"
   }
