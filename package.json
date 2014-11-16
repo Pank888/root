@@ -7,7 +7,7 @@
     "body-parser": "^1.9.2",
     "compression": "^1.2.0",
     "cookie-parser": "^1.3.3",
-    "express": "^4.10.1",
+    "express": "4.10.2",
     "magic-auth": "git://github.com/express-magic/magic-auth",
     "magic-db": "git://github.com/express-magic/magic-db",
     "magic-errorHandler": "git://github.com/express-magic/magic-errorHandler",
