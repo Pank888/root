@@ -27,8 +27,9 @@ magic.spawn = function(cb) {
   } );
 
   if ( conf && conf.db ) {
-    let schema = db(conf.db);
-    M.set('schema', schema);
+    M.use(function (req, res, next ) {
+      db(conf.db, next);
+    } );
 
     M.use( function(req, res, next) {
       //creates the user database models
