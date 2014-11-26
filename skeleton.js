@@ -42,7 +42,7 @@ module.exports = function(M, S, dir) {
   }
 
   if ( S.get('faviconExists') ) {
-    S.use( favicon(faviconPath) );
+    S.use( favicon(faviconPath), {maxAge: 86400000 );
   }
 
   S.set('views', dirs.views);
