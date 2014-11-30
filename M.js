@@ -27,18 +27,20 @@ magic.spawn = function(cb) {
   } );
 
   if ( conf && conf.db ) {
-    M.use(function (req, res, next ) {
-      db(conf.db, next);
-    } );
-
     M.use( function(req, res, next) {
-      //creates the user database models
-      users.init(schema);
-      auth.init(schema);
-      next();
-    } );
-  }
+      db(conf.db, function (err, mongoose) {
+        if ( err ) { log.error(err); }
 
+        if ( mongoose ) {
+          //creates the user database models
+          users.init(mongoose);
+          auth.init(mongoose);
+          M.set('mongoose', mongoose);
+        }
+        next();
+      });
+    });
+  }
   log('M spawned, env = ' + M.get('env'));
   cb(null, M);
 }
