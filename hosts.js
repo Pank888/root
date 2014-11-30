@@ -1,5 +1,4 @@
 'use strict';
-
 var fs          = require('fs')
   , async       = require('async')
   , path        = require('path')
@@ -20,7 +19,6 @@ exports.mount = function autoload(magic, cb) {
   , mountHosts
   ], cb);
 }
-
 
 exports.findHosts = function findHosts(cb) {
   var args = {};
