@@ -28,7 +28,12 @@ module.exports = function(M, S, dir) {
     }
   ;
 
-  if ( ! S.get('allowHttp') && S.get('env') === 'production' ) {
+  S.use(function (req, res, next) {
+    req.app = S;
+    next();
+  });
+
+  if ( ! S.enabled('allowHttp') && S.get('env') === 'production' ) {
    // S.use(sslRedirect);
   }
 
@@ -36,13 +41,13 @@ module.exports = function(M, S, dir) {
   S.use(headers);
 
   //fs.existsSync only gets called once
-  if ( ! S.get('faviconExistanceCheck') ) {
-    S.set('faviconExistanceCheck', true);
+  if ( ! S.get('faviconExistenceCheck') ) {
+    S.set('faviconExistenceCheck', true);
     S.set('faviconExists', fs.existsSync(faviconPath));
   }
 
   if ( S.get('faviconExists') ) {
-    S.use( favicon(faviconPath), {maxAge: 86400000 );
+    S.use( favicon(faviconPath) );
   }
 
   S.set('views', dirs.views);
@@ -54,48 +59,60 @@ module.exports = function(M, S, dir) {
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
   if ( S.get('db') ) {
-    let dbConf = S.get('db')
-      , schema = db(dbConf);
-    ;
+    let dbConf = S.get('db');
 
-    S.set('schema', schema);
+    S.use(function (req, res, next) {
+      db(dbConf, function (err, mongoose) {
+      if ( err ) { log.error(err); }
+        S.set('mongoose', mongoose);
+        next();
+      });
+    } );
   }
 
   //logging
   S.use(morgan('combined'));
 
   //if host sets bodyparser to true, init it
-  if ( S.get('bodyParser') ) {
+  if ( S.enabled('bodyParser') ) {
     S.use(bodyParser.json());
     S.use(bodyParser.urlencoded({ extended: false }));
   }
 
   //if host sets cookieparser to true, init it:
-  if ( S.get('cookieParser') ) {
+  if ( S.enabled('cookieParser') ) {
     S.use(cookieParser());
   }
-  
-  if ( S.get('useAuth') ) {
+
+  //use magic-auth
+  if ( S.enabled('useAuth') ) {
     S.use(function (req, res, next) {
        auth.routes(S, req, res, next);
     });
   }
 
-  //load host specific routes
-  if ( S.get('routes') ) {
-    let routes = S.get('routes');
+  //load host specific router
+  if ( S.get('router') ) {
+    let routes = S.get('router');
 
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
       for (let route in routes ) {
-        S.use(route);
+        if ( routes.hasOwnProperty(route) ) {
+          S.use(routes[route]);
+        }
       }
     } else if ( typeof routes === 'function' ) { 
-      S.use( routes );
+      S.use(routes);
     }
   }
 
+  //default router
   S.use(router);
+
+  //we are in a 404 error
   S.use(errorHandler.handle404);
+
+  //oops, worst case fallback, 500 server error.
   S.use(errorHandler.handle500);
 
   return S;
