@@ -1,6 +1,6 @@
 'use strict';
-var db           = require('magic-db')
-  , express      = require('express')
+var express      = require('express')
+  //~ , db           = require('magic-db')
   , stylus       = require('stylus')
   , bodyParser   = require('body-parser')
   , cookieParser = require('cookie-parser')
@@ -12,6 +12,7 @@ var db           = require('magic-db')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
   , auth         = require('magic-auth')
+  , blog         = require('magic-blog')
   , path         = require('path')
   , router       = require('magic-router')
   , sslRedirect  = require('magic-ssl')
@@ -20,13 +21,15 @@ var db           = require('magic-db')
 module.exports = function(M, S, dir) {
   var css         = ( S.get('css') || stylus )
     , env         = S.get('env') || 'production'
-    , dbConf      = S.get('db') || false
+    //~ , dbConf      = S.get('db') || false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = S.get('dirs') || {
         public: path.join(dir, 'public')
       , views : path.join(dir, 'views')
     }
   ;
+
+  S.set('dirs', dirs);
 
   S.use(function (req, res, next) {
     req.app = S;
@@ -58,7 +61,7 @@ module.exports = function(M, S, dir) {
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
-  if ( S.get('db') ) {
+/*  if ( S.get('db') ) {
     let dbConf = S.get('db');
 
     S.use(function (req, res, next) {
@@ -68,6 +71,11 @@ module.exports = function(M, S, dir) {
         next();
       });
     } );
+  }
+*/
+
+  if ( S.get('blogRoot') ) {
+    S.use( blog );
   }
 
   //logging
