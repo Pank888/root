@@ -6,7 +6,7 @@ var express = require('express')
   , path    = require('path')
   , hosts   = require('magic-hosts')
   , log     = require('magic-log')
-  , db      = require('magic-db')
+  //~ , db      = require('magic-db')
   , auth    = require('magic-auth')
   , users   = require('magic-users')
   , magic   = {}
@@ -26,21 +26,21 @@ magic.spawn = function(cb) {
     'hosts' : path.join( cwd, 'hosts' )
   } );
 
-  if ( conf && conf.db ) {
-    M.use( function(req, res, next) {
-      db(conf.db, function (err, mongoose) {
-        if ( err ) { log.error(err); }
-
-        if ( mongoose ) {
-          //creates the user database models
-          users.init(mongoose);
-          auth.init(mongoose);
-          M.set('mongoose', mongoose);
-        }
-        next();
-      });
-    });
-  }
+  //~ if ( conf && conf.db ) {
+    //~ M.use( function(req, res, next) {
+      //~ db(conf.dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, function (err, mongoose) {
+        //~ if ( err ) { log.error(err); }
+//~ 
+        //~ if ( mongoose ) {
+          //~ //creates the user database models
+          //~ users.init(mongoose);
+          //~ auth.init(mongoose);
+          //~ M.set('mongoose', mongoose);
+        //~ }
+        //~ next();
+      //~ });
+    //~ });
+  //~ }
   log('M spawned, env = ' + M.get('env'));
   cb(null, M);
 }
