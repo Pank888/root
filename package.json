@@ -16,6 +16,7 @@
     "magic-menu": "git://github.com/express-magic/magic-menu",
     "magic-router": "git://github.com/express-magic/magic-router",
     "magic-ssl": "git://github.com/express-magic/magic-ssl",
+    "magic-blog": "git://github.com/express-magic/magic-blog",
     "morgan": "^1.5.0",
     "serve-favicon": "^2.1.6",
     "stylus": "^0.49.3"
