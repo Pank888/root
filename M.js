@@ -69,8 +69,12 @@ magic.listen = function (M, cb) {
   });
 
   http.createServer(M).listen(80);
-  var httpsOptions = {};
-  https.createServer(httpsOptions, M).listen(443);
+  //disable for now, requires ssl cert
+  //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  //var httpsOptions = {
+  //    rejectUnauthorized: false
+  //};
+  //https.createServer(httpsOptions, M).listen(443);
 }
 
 module.exports = function init(cb) {
