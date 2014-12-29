@@ -64,17 +64,13 @@ magic.listen = function (M, cb) {
       return res.redirect(conf.host);
     }
     log.warn('magic', 'final error handler, no default host found');
-    //TODO: Render this as a global 404 error page
-    res.send('final error handler');
+    //TODO: Render this as a global 404 error page, ugly but working
+    res.send('final error handler. this is the end of the internet.');
   });
 
-  http.createServer(M).listen(80);
-  //disable for now, requires ssl cert
-  //process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-  //var httpsOptions = {
-  //    rejectUnauthorized: false
-  //};
-  //https.createServer(httpsOptions, M).listen(443);
+  M.listen( M.get('port'), function(err) {
+    if ( typeof cb === 'function' ) { cb(err, M); }
+  } );
 }
 
 module.exports = function init(cb) {
