@@ -14,6 +14,8 @@ var express = require('express')
   , cwd     = process.cwd()
   , config  = require( path.join(cwd, 'config') )
   , conf    = config.defaults[env] || false
+  , https = require('https');
+  , http = require('http');
 ;
 
 magic.spawn = function(cb) {
@@ -65,10 +67,9 @@ magic.listen = function (M, cb) {
     //TODO: Render this as a global 404 error page
     res.send('final error handler');
   });
-  
-  M.listen( M.get('port'), function() {
-    if ( typeof cb === 'function' ) { cb(null, M); }
-  } );
+
+  http.createServer(M).listen(80);
+  https.createServer(options, M).listen(443);
 }
 
 module.exports = function init(cb) {
