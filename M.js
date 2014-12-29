@@ -19,8 +19,11 @@ var express = require('express')
 magic.spawn = function(cb) {
   //default env is production
   M.set('env', env );
+  log('conf.PORT', conf.PORT);
 
-  M.set('port', ( process.env.PORT || 5000) );
+  M.set('port', ( conf.PORT || process.env.PORT || 5000) );
+
+  log('M.get("port")', M.get('port'));
 
   M.set('dirs', {
     'hosts' : path.join( cwd, 'hosts' )
@@ -28,7 +31,7 @@ magic.spawn = function(cb) {
 
   //~ if ( conf && conf.db ) {
     //~ M.use( function(req, res, next) {
-      //~ db(conf.dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb, function (err, mongoose) {
+      //~ db(conf.db, function (err, mongoose) {
         //~ if ( err ) { log.error(err); }
 //~ 
         //~ if ( mongoose ) {
