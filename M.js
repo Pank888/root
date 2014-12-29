@@ -69,7 +69,8 @@ magic.listen = function (M, cb) {
   });
 
   http.createServer(M).listen(80);
-  https.createServer(options, M).listen(443);
+  var httpsOptions = {};
+  https.createServer(httpsOptions, M).listen(443);
 }
 
 module.exports = function init(cb) {
