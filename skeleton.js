@@ -28,6 +28,7 @@ module.exports = function(M, S, dir) {
         public: path.join(dir, 'public')
       , views : path.join(dir, 'views')
     }
+    , bundle = browserify(S)
   ;
 
   S.set('dirs', dirs);
@@ -59,7 +60,7 @@ module.exports = function(M, S, dir) {
 
   S.use(compression({ threshold: 128 }));
 
-  S.use(browserify);
+  S.use(bundle);
 
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
