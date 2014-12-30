@@ -24,11 +24,11 @@ module.exports = function(M, S, dir) {
     , env         = S.get('env') || 'production'
     //~ , dbConf      = S.get('db') || false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
+    , browserifyBundle = browserify(S.get('browserify'))
     , dirs        = S.get('dirs') || {
         public: path.join(dir, 'public')
       , views : path.join(dir, 'views')
     }
-    , bundle = browserify(S)
   ;
 
   S.set('dirs', dirs);
@@ -60,7 +60,9 @@ module.exports = function(M, S, dir) {
 
   S.use(compression({ threshold: 128 }));
 
-  S.use(bundle);
+  if ( browserifyBundle ) {
+    S.use(browserifyBundle);
+  }
 
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
