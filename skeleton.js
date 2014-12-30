@@ -59,6 +59,8 @@ module.exports = function(M, S, dir) {
 
   S.use(compression({ threshold: 128 }));
 
+  S.use(browserify);
+
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
