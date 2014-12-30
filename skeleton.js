@@ -17,7 +17,6 @@ var express      = require('express')
   , path         = require('path')
   , favicon      = require('serve-favicon')
   , stylus       = require('stylus')
-  ,
 ;
 
 module.exports = function(M, S, dir) {
