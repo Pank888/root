@@ -1,21 +1,23 @@
 'use strict';
 var express      = require('express')
   //~ , db           = require('magic-db')
-  , stylus       = require('stylus')
   , bodyParser   = require('body-parser')
   , cookieParser = require('cookie-parser')
   , compression  = require('compression')
-  , favicon      = require('serve-favicon')
   , fs           = require('fs')
-  , morgan       = require('morgan')
   , errorHandler = require('magic-errorHandler')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
   , auth         = require('magic-auth')
   , blog         = require('magic-blog')
-  , path         = require('path')
   , router       = require('magic-router')
+  , browserify   = require('magic-browserify')
   , sslRedirect  = require('magic-ssl')
+  , morgan       = require('morgan')
+  , path         = require('path')
+  , favicon      = require('serve-favicon')
+  , stylus       = require('stylus')
+  ,
 ;
 
 module.exports = function(M, S, dir) {
