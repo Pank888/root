@@ -7,6 +7,7 @@
     "async": "^0.9.0",
     "express": "4.10.2",
     "magic-auth": "git://github.com/express-magic/magic-auth",
+    "magic-browserify": "git://github.com/express-magic/magic-browserify",
     "magic-db": "git://github.com/express-magic/magic-db",
     "magic-hosts": "git://github.com/express-magic/magic-hosts",
     "magic-log": "git://github.com/express-magic/magic-log",
