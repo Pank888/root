@@ -10,7 +10,6 @@
     "express": "4.10.2",
     "magic-auth": "git://github.com/express-magic/magic-auth",
     "magic-blog": "git://github.com/express-magic/magic-blog",
-    "magic-browserify": "git://github.com/express-magic/magic-browserify",
     "magic-db": "git://github.com/express-magic/magic-db",
     "magic-errorHandler": "git://github.com/express-magic/magic-errorHandler",
     "magic-headers": "git://github.com/express-magic/magic-headers",

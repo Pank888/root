@@ -11,7 +11,6 @@ var express      = require('express')
   , auth         = require('magic-auth')
   , blog         = require('magic-blog')
   , router       = require('magic-router')
-  , browserify   = require('magic-browserify')
   , sslRedirect  = require('magic-ssl')
   , morgan       = require('morgan')
   , path         = require('path')
@@ -24,7 +23,6 @@ module.exports = function(M, S, dir) {
     , env         = S.get('env') || 'production'
     //~ , dbConf      = S.get('db') || false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
-    , browserifyBundle = browserify(S.get('browserify'))
     , dirs        = S.get('dirs') || {
         public: path.join(dir, 'public')
       , views : path.join(dir, 'views')
@@ -59,10 +57,6 @@ module.exports = function(M, S, dir) {
   S.set('view engine', S.get('view engine') || 'jade');
 
   S.use(compression({ threshold: 128 }));
-
-  if ( browserifyBundle ) {
-    S.use(browserifyBundle);
-  }
 
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
