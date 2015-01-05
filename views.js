@@ -21,8 +21,9 @@ exports.render = {
       , app  = req.app
       , template = 'pages/' + dir + '/' + page
     ;
-    if ( ! dir || ! page ) { return next(); }
-    console.log('magic-views', 'rendering dir', dir, 'rendering subpage', page);
+    
+    if ( ! dir || ! page || dir.indexOf('.') !== 0 ) { return next(); }
+    log('magic-views', 'rendering dir', dir, 'rendering subpage', page);
 
     res.render(template, function (err, html) {
       if ( err || ! html ) { return next(); } //404, no error passing!
