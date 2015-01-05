@@ -43,7 +43,7 @@ module.exports = function(M, S, dir) {
   //set expiry headers
   S.use(headers);
 
-  //fs.existsSync only gets called once
+  //fs.existsSync only gets called once on first request
   if ( ! S.get('faviconExistenceCheck') ) {
     S.set('faviconExistenceCheck', true);
     S.set('faviconExists', fs.existsSync(faviconPath));
@@ -75,7 +75,7 @@ module.exports = function(M, S, dir) {
 */
 
   if ( S.get('blogRoot') ) {
-    S.use( blog );
+    S.use( '/blog', blog );
   }
 
   //logging
