@@ -14,8 +14,6 @@ var express = require('express')
   , cwd     = process.cwd()
   , config  = require( path.join(cwd, 'config') )
   , conf    = config.defaults[env] || false
-  , https = require('https')
-  , http = require('http')
 ;
 
 magic.spawn = function(cb) {
