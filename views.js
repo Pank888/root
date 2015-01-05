@@ -23,7 +23,7 @@ exports.render = {
       ;
 
       if ( ! dir || ! page || dir.indexOf('.') === 0 || dir === 'inc') { return next(); }
-      log('magic-views', 'rendering dir:', dir, 'rendering subpage', page);
+      log('magic-views', 'rendering dir:', dir, 'rendering subpage', template);
 
       res.render(template, function (err, html) {
         if ( err || ! html ) { return next(); } //404, no error passing!
