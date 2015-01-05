@@ -12,6 +12,7 @@ var express      = require('express')
   , blog         = require('magic-blog')
   , router       = require('magic-router')
   , sslRedirect  = require('magic-ssl')
+  , utils        = require('magic-utils')
   , morgan       = require('morgan')
   , path         = require('path')
   , favicon      = require('serve-favicon')
@@ -61,6 +62,7 @@ module.exports = function(M, S, dir) {
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
 
+  //db is disabled for now, pending arangodb or postgres integration
 /*  if ( S.get('db') ) {
     let dbConf = S.get('db');
 
@@ -104,11 +106,9 @@ module.exports = function(M, S, dir) {
     let routes = S.get('router');
 
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
-      for (let route in routes ) {
-        if ( routes.hasOwnProperty(route) ) {
-          S.use(routes[route]);
-        }
-      }
+      utils.each(routes, function (route) {
+        S.use(route);
+      });
     } else if ( typeof routes === 'function' ) { 
       S.use(routes);
     }
