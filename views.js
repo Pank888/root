@@ -10,7 +10,7 @@ exports.render = {
       log('magic-views', 'Rendering Page:', page);
 
       res.render(template, function (err, html) {
-        if ( err || ! html ) { return next(err); }
+        if ( err || ! html ) { return next(); } //404, no error passing!
         log('magic-view', 'Sending response');
         res.send(html);
       });
@@ -25,7 +25,7 @@ exports.render = {
     console.log('magic-views', 'rendering dir', dir, 'rendering subpage', page);
 
     res.render(template, function (err, html) {
-      if ( err || ! html ) { return next(); } //404
+      if ( err || ! html ) { return next(); } //404, no error passing!
       log('magic-view', 'Sending response');
       res.send(html);
     });
