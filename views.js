@@ -7,7 +7,7 @@ exports.render = {
         , app      = req.app
         , template = 'pages/' + page
       ;
-      log('magic-views', 'Rendering Page:', page);
+      log('magic-views', 'Rendering Page:', page, 'with template', template);
 
       res.render(template, function (err, html) {
         if ( err || ! html ) { return next(); } //404, no error passing!
