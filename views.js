@@ -22,7 +22,7 @@ exports.render = {
       , template = 'pages/' + dir + '/' + page
     ;
     
-    if ( ! dir || ! page || dir.indexOf('.') !== 0 || dir === 'inc') { return next(); }
+    if ( ! dir || ! page || dir.indexOf('.') === 0 || dir === 'inc') { return next(); }
     log('magic-views', 'rendering dir', dir, 'rendering subpage', page);
 
     res.render(template, function (err, html) {
