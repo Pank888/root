@@ -1,6 +1,6 @@
 {
   "name": "magic-skeleton",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "main": "./skeleton.js",
   "dependencies": {
