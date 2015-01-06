@@ -77,7 +77,14 @@ module.exports = function(M, S, dir) {
 */
 
   if ( S.get('blogRoot') ) {
-    S.use( '/blog', blog );
+    let blogRoot = S.get('blogRoot');
+    if ( typeof blogRoot !== 'string' && typeof blogRoot !== 'number' ) {
+      blogRoot = 'blog';
+    }
+    if ( blogRoot.indexOf('/') !== 0 ) {
+      blogRoot = '/' + blogRoot;
+    }
+    S.use( blogRoot, blog );
   }
 
   //logging
