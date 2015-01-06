@@ -1,6 +1,5 @@
 'use strict';
 var express      = require('express')
-  //~ , db           = require('magic-db')
   , bodyParser   = require('body-parser')
   , cookieParser = require('cookie-parser')
   , compression  = require('compression')
@@ -22,7 +21,6 @@ var express      = require('express')
 module.exports = function(M, S, dir) {
   var css         = ( S.get('css') || stylus )
     , env         = S.get('env') || 'production'
-    //~ , dbConf      = S.get('db') || false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = S.get('dirs') || {
         public: path.join(dir, S.get('publicDir') || 'public')
@@ -61,20 +59,6 @@ module.exports = function(M, S, dir) {
 
   S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
   S.use( express.static(dirs.public, {maxAge: '1d'}) );
-
-  //db is disabled for now, pending arangodb or postgres integration
-/*  if ( S.get('db') ) {
-    let dbConf = S.get('db');
-
-    S.use(function (req, res, next) {
-      db(dbConf, function (err, mongoose) {
-      if ( err ) { log.error(err); }
-        S.set('mongoose', mongoose);
-        next();
-      });
-    } );
-  }
-*/
 
   if ( S.get('blogRoot') ) {
     let blogRoot = S.get('blogRoot');
