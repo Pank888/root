@@ -7,7 +7,6 @@ var express      = require('express')
   , errorHandler = require('magic-errorHandler')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
-  , auth         = require('magic-auth')
   , blog         = require('magic-blog')
   , router       = require('magic-router')
   , sslRedirect  = require('magic-ssl')
@@ -83,13 +82,6 @@ module.exports = function(M, S, dir) {
   //if host sets cookieparser to true, init it:
   if ( S.enabled('cookieParser') ) {
     S.use(cookieParser());
-  }
-
-  //use magic-auth
-  if ( S.enabled('useAuth') ) {
-    S.use(function (req, res, next) {
-       auth.routes(S, req, res, next);
-    });
   }
 
   //load host specific router
