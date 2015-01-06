@@ -64,8 +64,10 @@ module.exports = function(M, S, dir) {
     if ( typeof blogRoot !== 'string' && typeof blogRoot !== 'number' ) {
       blogRoot = 'blog';
     }
-    if ( blogRoot.indexOf('/') !== 0 ) {
+    if ( blogRoot.charAt(0) !== '/' ) {
       blogRoot = '/' + blogRoot;
+    } else {
+      S.set('blogRoot', blogRoot.substr(1) );
     }
     S.use( blogRoot, blog );
   }
