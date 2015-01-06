@@ -12,7 +12,7 @@ exports.render = {
       res.render(template, function (err, html) {
         if ( err || ! html ) { return next(); } //404, no error passing!
         log('magic-view', 'Sending response');
-        res.send(html);
+        res.status(200).send(html);
       });
     }
   , subPage: function renderSubPage(req, res, next) {
@@ -28,7 +28,7 @@ exports.render = {
       res.render(template, function (err, html) {
         if ( err || ! html ) { return next(); } //404, no error passing!
         log('magic-view', 'Sending response');
-        res.send(html);
+        res.status(200).send(html);
       });
     }
 };
