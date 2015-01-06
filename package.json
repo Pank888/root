@@ -5,11 +5,9 @@
   "main": "./M.js",
   "dependencies": {
     "async": "^0.9.0",
-    "express": "4.10.2",
-    "magic-auth": "git://github.com/express-magic/magic-auth",
+    "express": "^4.10.7",
     "magic-db": "git://github.com/express-magic/magic-db",
     "magic-hosts": "git://github.com/express-magic/magic-hosts",
-    "magic-log": "git://github.com/express-magic/magic-log",
-    "magic-users": "git://github.com/express-magic/magic-users"
+    "magic-log": "git://github.com/express-magic/magic-log"
   }
 }
