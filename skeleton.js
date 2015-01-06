@@ -43,8 +43,8 @@ module.exports = function(M, S, dir) {
   S.use(headers);
 
   //fs.existsSync only gets called once on first request
-  if ( ! S.get('faviconExistenceCheck') ) {
-    S.set('faviconExistenceCheck', true);
+  if ( ! S.get('faviconChecked') && ! S.get('faviconExists') ) {
+    S.set('faviconChecked', true);
     S.set('faviconExists', fs.existsSync(faviconPath));
   }
 
