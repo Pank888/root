@@ -25,8 +25,8 @@ module.exports = function(M, S, dir) {
     //~ , dbConf      = S.get('db') || false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = S.get('dirs') || {
-        public: path.join(dir, 'public')
-      , views : path.join(dir, 'views')
+        public: path.join(dir, S.get('publicDir') || 'public')
+      , views : path.join(dir, S.get('viewsDir') || 'views')
     }
   ;
 
