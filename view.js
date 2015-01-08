@@ -2,9 +2,9 @@
 var log = require('magic-log');
 
 function renderPage(res, template, next) {
-  log('magic-views', 'rendering page', template);
+  log('magic-view', 'rendering page', template);
   res.render(template, function (err, html) {
-    log('magic-views', 'rendered page');
+    log('magic-view', 'rendered page');
     if ( err ) { log.error('magic-view', 'error in res.render', err); }
     if ( err || ! html ) { return next(); } //404, no error passing!
     log('magic-view', 'Sending response');
@@ -17,7 +17,7 @@ module.exports = {
       var page     = ( req.params.page || 'index' )
         , template = 'pages/' + page
       ;
-      log('magic-views', 'Rendering Page:', page, 'with template', template);
+      log('magic-view', 'Rendering Page:', page, 'with template', template);
       //~ res.locals.page = page;
       renderPage(res, template, next);
     }
@@ -28,7 +28,7 @@ module.exports = {
       ;
       if ( ! dir || ! page ) { return next(); }
       //~ res.locals.page = dir + '/' + page;
-      log('magic-views', 'rendering dir:', dir, 'rendering subpage', template);
+      log('magic-view', 'rendering dir:', dir, 'rendering subpage', template);
       renderPage(res, template, next);
     }
 };
