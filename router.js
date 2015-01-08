@@ -4,8 +4,8 @@ var express = require('express')
   , view    = require('magic-view')
 ;
 
-router.get('/', view.render.page);
-router.get('/:dir/:page', view.render.subPage);
-router.get('/:page', view.render.page);
+router.get('/', view.page);
+router.get('/:dir/:page', view.subPage);
+router.get('/:page', view.page);
 
 module.exports = router;
