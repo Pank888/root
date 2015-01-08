@@ -1,7 +1,7 @@
 'use strict';
 var log = require('magic-log');
 
-function renderPage(res, page, template, next) {
+function renderPage(res, template, next) {
   res.render(template, function (err, html) {
     if ( err ) { log.error('magic-view', 'error in res.render', err); }
     if ( err || ! html ) { return next(); } //404, no error passing!
@@ -16,8 +16,8 @@ exports.render = {
         , template = 'pages/' + page
       ;
       log('magic-views', 'Rendering Page:', page, 'with template', template);
-      res.locals.page = page;
-      renderPage(res, page, template, next);
+      //~ res.locals.page = page;
+      renderPage(res, template, next);
     }
   , subPage: function renderSubPage(req, res, next) {
       var page = ( req.params.page || 'index' )
@@ -25,8 +25,8 @@ exports.render = {
         , template = 'pages/' + dir + '/' + page
       ;
       if ( ! dir || ! page ) { return next(); }
-      res.locals.page = dir + '/' + page;
+      //~ res.locals.page = dir + '/' + page;
       log('magic-views', 'rendering dir:', dir, 'rendering subpage', template);
-      renderPage(res, page, template, next);
+      renderPage(res, template, next);
     }
 };
