@@ -8,13 +8,11 @@ function renderPage(res, page, template, next) {
     log('magic-view', 'Sending response');
     res.status(200).send(html);
   });
-
 }
 
 exports.render = {
     page: function renderPage(req, res, next) {
       var page     = ( req.params.page || 'index' )
-        , app      = req.app
         , template = 'pages/' + page
       ;
       log('magic-views', 'Rendering Page:', page, 'with template', template);
@@ -23,13 +21,10 @@ exports.render = {
   , subPage: function renderSubPage(req, res, next) {
       var page = ( req.params.page || 'index' )
         , dir  = ( req.params.dir || false )
-        , app  = req.app
         , template = 'pages/' + dir + '/' + page
       ;
-
       if ( ! dir || ! page ) { return next(); }
       log('magic-views', 'rendering dir:', dir, 'rendering subpage', template);
-
       renderPage(res, page, template, next);
     }
 };
