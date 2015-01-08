@@ -2,7 +2,9 @@
 var log = require('magic-log');
 
 function renderPage(res, template, next) {
+  log('magic-views', 'rendering page', template);
   res.render(template, function (err, html) {
+    log('magic-views', 'rendered page');
     if ( err ) { log.error('magic-view', 'error in res.render', err); }
     if ( err || ! html ) { return next(); } //404, no error passing!
     log('magic-view', 'Sending response');
