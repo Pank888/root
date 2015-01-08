@@ -12,7 +12,7 @@ function renderPage(res, template, next) {
   });
 }
 
-exports.render = {
+module.exports = {
     page: function renderPage(req, res, next) {
       var page     = ( req.params.page || 'index' )
         , template = 'pages/' + page

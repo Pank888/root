@@ -2,7 +2,7 @@
   "name": "magic-view",
   "version": "0.0.3",
   "private": true,
-  "main": "./views.js",
+  "main": "./view.js",
   "dependencies": {
     "magic-log": "git://github.com/express-magic/magic-log"
   }
