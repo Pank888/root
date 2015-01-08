@@ -2,7 +2,6 @@
 var log = require('magic-log');
 
 function renderPage(res, page, template, next) {
-  res.locals.page = page;
   res.render(template, function (err, html) {
     if ( err ) { log.error('magic-view', 'error in res.render', err); }
     if ( err || ! html ) { return next(); } //404, no error passing!
