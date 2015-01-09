@@ -24,14 +24,14 @@ function getPage(req) {
 
 function getTemplate(req, res) {
   var page     = getPage(req)
-    , template = page
+    , template = 'pages/'
   ;
 
   if ( req.params && req.params.dir ) {
-    template = req.params.dir + '/' + page;
+    template += req.params.dir + '/';
   }
   
-  template = 'pages/' + template;
+  template += page;
 
   log('magic-view', 'Rendering Page:', page, 'with template', template);
   res.locals.page = page;
