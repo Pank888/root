@@ -4,7 +4,7 @@ var log = require('magic-log')
 ;
 
 function renderTemplate(res, template, next) {
-  log('magic-view', 'rendering page', template);
+  log('magic-view', 'rendering pagetemplate', template);
   res.render(template, function (err, html) {
     log('magic-view', 'rendered page');
     if ( err ) { log.error('magic-view', 'error in res.render', err); }
@@ -24,7 +24,7 @@ function getPage(req) {
 
 function getTemplate(req, res) {
   var page     = getPage(req)
-    , template = ''
+    , template = page
   ;
 
   if ( req.params && req.params.dir ) {
