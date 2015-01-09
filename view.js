@@ -30,6 +30,8 @@ function getTemplate(req, res) {
   if ( req.params && req.params.dir ) {
     template = req.params.dir + '/' + page;
   }
+  
+  template = 'pages/' + template;
 
   log('magic-view', 'Rendering Page:', page, 'with template', template);
   res.locals.page = page;
