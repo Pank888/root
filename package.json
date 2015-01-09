@@ -6,6 +6,6 @@
   "dependencies": {
     "express": "4.10.2",
     "magic-log": "express-magic/magic-log",
-    "magic-view": "git://github.com/express-magic/magic-view"
+    "magic-view": "express-magic/magic-view"
   }
 }
