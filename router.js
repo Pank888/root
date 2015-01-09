@@ -5,7 +5,7 @@ var express = require('express')
 ;
 
 router.get('/', view.page);
-router.get('/:dir/:page', view.subPage);
+router.get('/:dir/:page', view.page);
 router.get('/:page', view.page);
 
 module.exports = router;
