@@ -3,7 +3,7 @@ var log = require('magic-log')
   , view = {}
 ;
 
-function renderPage(res, template, next) {
+function renderTemplate(res, template, next) {
   log('magic-view', 'rendering page', template);
   res.render(template, function (err, html) {
     log('magic-view', 'rendered page');
@@ -17,24 +17,29 @@ function renderPage(res, template, next) {
   });
 }
 
-view.page = function renderPage(req, res, next) {
-  var page     = ( req.params.page || 'index' )
-    , template = 'pages/' + page
-  ;
-  log('magic-view', 'Rendering Page:', page, 'with template', template);
-  res.locals.page = page;
-  renderPage(res, template, next);
+function getPage(params) {
+  return (params && params.page ) ? params.page : 'index';
 }
 
-view.subPage = function renderSubPage(req, res, next) {
-  var page = ( req.params.page || 'index' )
-    , dir  = ( req.params.dir || false )
-    , template = 'pages/' + dir + '/' + page
+
+function getTemplate(req, res) {
+  var page     = getPage(req.params)
+    , template = ''
   ;
-  if ( ! dir || ! page ) { return next(); }
-  //~ res.locals.page = dir + '/' + page;
-  log('magic-view', 'rendering dir:', dir, 'rendering subpage', template);
-  renderPage(res, template, next);
+
+  if ( req.params && req.params.dir ) {
+    template = req.params.dir + '/' + page;
+  }
+
+  log('magic-view', 'Rendering Page:', page, 'with template', template);
+  res.locals.page = page;
+  res.locals.template = template;
+  return template;
+}
+
+view.page = function renderPage(req, res, next) {
+  var template = getTemplate(req.params);
+  renderTemplate(res, template, next);
 }
 
 module.exports = view;
