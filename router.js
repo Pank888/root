@@ -1,6 +1,5 @@
 var express = require('express')
   , router  = express.Router()
-  , log     = require('magic-log')
   , view    = require('magic-view')
 ;
 

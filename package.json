@@ -5,7 +5,6 @@
   "main": "./router.js",
   "dependencies": {
     "express": "^4.10.7",
-    "magic-log": "git://github.com/express-magic/magic-log",
     "magic-view": "git://github.com/express-magic/magic-view"
   }
 }
