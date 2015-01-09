@@ -17,13 +17,13 @@ function renderTemplate(res, template, next) {
   });
 }
 
-function getPage(params) {
-  return (params && params.page ) ? params.page : 'index';
+function getPage(req) {
+  return (req.params && req.params.page ) ? req.params.page : 'index';
 }
 
 
 function getTemplate(req, res) {
-  var page     = getPage(req.params)
+  var page     = getPage(req)
     , template = ''
   ;
 
@@ -38,7 +38,7 @@ function getTemplate(req, res) {
 }
 
 view.page = function renderPage(req, res, next) {
-  var template = getTemplate(req.params);
+  var template = getTemplate(req, res);
   renderTemplate(res, template, next);
 }
 
