@@ -6,7 +6,6 @@ var express = require('express')
   , path    = require('path')
   , hosts   = require('magic-hosts')
   , log     = require('magic-log')
-  //~ , db      = require('magic-db')
   , magic   = {}
   , env     = ( M.get('env') || 'production' )
   , cwd     = process.cwd()
