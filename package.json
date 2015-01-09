@@ -13,7 +13,6 @@
     "magic-headers": "git://github.com/express-magic/magic-headers",
     "magic-log": "git://github.com/express-magic/magic-log",
     "magic-router": "git://github.com/express-magic/magic-router",
-    "magic-ssl": "git://github.com/express-magic/magic-ssl",
     "magic-utils": "git://github.com/express-magic/magic-utils",
     "morgan": "^1.5.0",
     "serve-favicon": "^2.1.6",

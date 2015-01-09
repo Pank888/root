@@ -9,7 +9,6 @@ var express      = require('express')
   , log          = require('magic-log')
   , blog         = require('magic-blog')
   , router       = require('magic-router')
-  , sslRedirect  = require('magic-ssl')
   , utils        = require('magic-utils')
   , morgan       = require('morgan')
   , path         = require('path')
@@ -33,10 +32,6 @@ module.exports = function(M, S, dir) {
     req.app = S;
     next();
   });
-
-  if ( ! S.enabled('allowHttp') && S.get('env') === 'production' ) {
-   // S.use(sslRedirect);
-  }
 
   //set expiry headers
   S.use(headers);
