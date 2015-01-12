@@ -17,98 +17,98 @@ var express      = require('express')
   , stylus       = require('stylus')
 ;
 
-module.exports = function(M, S, dir) {
-  var css         = ( S.get('css') || stylus )
-    , env         = S.get('env') || 'production'
+module.exports = function(M, app, dir) {
+  var css         = ( app.get('css') || stylus )
+    , env         = app.get('env') || 'production'
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
-    , dirs        = S.get('dirs') || {
-        public: path.join(dir, S.get('publicDir') || 'public')
-      , views : path.join(dir, S.get('viewsDir') || 'views')
+    , dirs        = app.get('dirs') || {
+        public: path.join(dir, app.get('publicDir') || 'public')
+      , views : path.join(dir, app.get('viewsDir') || 'views')
     }
   ;
 
-  S.set('dirs', dirs);
+  app.set('dirs', dirs);
 
-  S.use(function (req, res, next) {
-    req.app = S;
+  app.use(function (req, res, next) {
+    req.app = app;
     next();
   });
 
   //set expiry headers
-  S.use(headers);
+  app.use(headers);
 
-  if ( S.get('basicAuth') ) {
+  if ( app.get('basicAuth') ) {
     app.use(
-      basicAuth( S.get('basicAuth') )
+      basicAuth( app.get('basicAuth') )
     );
   }
 
   //fs.existsSync only gets called once on first request
-  if ( ! S.get('faviconChecked') && ! S.get('faviconExists') ) {
-    S.set('faviconChecked', true);
-    S.set('faviconExists', fs.existsSync(faviconPath));
+  if ( ! app.get('faviconChecked') && ! app.get('faviconExists') ) {
+    app.set('faviconChecked', true);
+    app.set('faviconExists', fs.existsSync(faviconPath));
   }
 
-  if ( S.get('faviconExists') ) {
-    S.use( favicon(faviconPath) );
+  if ( app.get('faviconExists') ) {
+    app.use( favicon(faviconPath) );
   }
 
-  S.set('views', dirs.views);
-  S.set('view engine', S.get('view engine') || 'jade');
+  app.set('views', dirs.views);
+  app.set('view engine', app.get('view engine') || 'jade');
 
-  S.use(compression({ threshold: 128 }));
+  app.use(compression({ threshold: 128 }));
 
-  S.use( css.middleware(dirs.public, {maxAge: '1d'}) );
-  S.use( express.static(dirs.public, {maxAge: '1d'}) );
+  app.use( css.middleware(dirs.public, {maxAge: '1d'}) );
+  app.use( express.static(dirs.public, {maxAge: '1d'}) );
 
-  if ( S.get('blogRoot') ) {
-    let blogRoot = S.get('blogRoot');
+  if ( app.get('blogRoot') ) {
+    let blogRoot = app.get('blogRoot');
     if ( typeof blogRoot !== 'string' && typeof blogRoot !== 'number' ) {
       blogRoot = 'blog';
     }
     if ( blogRoot.charAt(0) !== '/' ) {
       blogRoot = '/' + blogRoot;
     } else {
-      S.set('blogRoot', blogRoot.substr(1) );
+      app.set('blogRoot', blogRoot.substr(1) );
     }
-    S.use( blogRoot, blog );
+    app.use( blogRoot, blog );
   }
 
   //logging
-  S.use(morgan('combined'));
+  app.use(morgan('combined'));
 
   //if host sets bodyparser to true, init it
-  if ( S.enabled('bodyParser') ) {
-    S.use(bodyParser.json());
-    S.use(bodyParser.urlencoded({ extended: false }));
+  if ( app.enabled('bodyParser') ) {
+    app.use(bodyParser.json());
+    app.use(bodyParser.urlencoded({ extended: false }));
   }
 
   //if host sets cookieparser to true, init it:
-  if ( S.enabled('cookieParser') ) {
-    S.use(cookieParser());
+  if ( app.enabled('cookieParser') ) {
+    app.use(cookieParser());
   }
 
   //load host specific router
-  if ( S.get('router') ) {
-    let routes = S.get('router');
+  if ( app.get('router') ) {
+    let routes = app.get('router');
 
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
       utils.each(routes, function (route) {
-        S.use(route);
+        app.use(route);
       });
     } else if ( typeof routes === 'function' ) { 
-      S.use(routes);
+      app.use(routes);
     }
   }
 
   //default router
-  S.use(router);
+  app.use(router);
 
   //we are in a 404 error
-  S.use(errorHandler.handle404);
+  app.use(errorHandler.handle404);
 
   //oops, worst case fallback, 500 server error.
-  S.use(errorHandler.handle500);
+  app.use(errorHandler.handle500);
 
-  return S;
+  return app;
 }
