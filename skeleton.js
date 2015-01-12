@@ -1,5 +1,6 @@
 'use strict';
 var express      = require('express')
+  , basicAuth    = require('node-basicauth')
   , bodyParser   = require('body-parser')
   , cookieParser = require('cookie-parser')
   , compression  = require('compression')
@@ -35,6 +36,12 @@ module.exports = function(M, S, dir) {
 
   //set expiry headers
   S.use(headers);
+
+  if ( S.get('basicAuth') ) {
+    app.use(
+      basicAuth( S.get('basicAuth') )
+    );
+  }
 
   //fs.existsSync only gets called once on first request
   if ( ! S.get('faviconChecked') && ! S.get('faviconExists') ) {
