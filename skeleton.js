@@ -9,6 +9,7 @@ var express      = require('express')
   , headers      = require('magic-headers')
   , log          = require('magic-log')
   , blog         = require('magic-blog')
+  , db           = require('magic-db')
   , router       = require('magic-router')
   , utils        = require('magic-utils')
   , morgan       = require('morgan')
@@ -26,6 +27,16 @@ module.exports = function(M, app, dir) {
       , views : path.join(dir, app.get('viewsDir') || 'views')
     }
   ;
+
+  if ( app.get('db') ) {
+    let dbConfig = app.get('db');
+
+    if ( dbConfig.name ) {
+      app.use(function (req, res, next) {
+        dbConfig, next);
+      });
+    }
+  }
 
   app.set('dirs', dirs);
 
