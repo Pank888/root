@@ -33,7 +33,7 @@ module.exports = function(M, app, dir) {
 
     if ( dbConfig.name ) {
       app.use(function (req, res, next) {
-        dbConfig, next);
+        db(dbConfig, next);
       });
     }
   }
