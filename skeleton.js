@@ -30,13 +30,13 @@ module.exports = function(M, app, dir) {
   ;
 
   if ( app.get('db') && ! dbSetUp ) {
+    dbSetUp = true;
     let dbConfig = app.get('db');
 
     if ( dbConfig.name ) {
       app.use(function (req, res, next) {
         db(dbConfig, function (err) {
           if ( err ) { throw err; }
-          dbSetUp = true;
           next();
         });
       });
