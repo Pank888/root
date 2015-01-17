@@ -21,7 +21,6 @@ var express      = require('express')
 module.exports = function(M, app, dir) {
   var css         = ( app.get('css') || stylus )
     , env         = app.get('env') || 'production'
-    , dbSetUp     = false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = app.get('dirs') || {
         public: path.join(dir, app.get('publicDir') || 'public')
@@ -29,8 +28,8 @@ module.exports = function(M, app, dir) {
     }
   ;
 
-  if ( app.get('db') && ! dbSetUp ) {
-    dbSetUp = true;
+  if ( app.get('db') && app.disabled('dbSetUp') ) {
+    app.enable('dbSetUp');
     let dbConfig = app.get('db');
 
     if ( dbConfig.name ) {
