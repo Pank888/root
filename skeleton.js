@@ -21,6 +21,7 @@ var express      = require('express')
 module.exports = function(M, app, dir) {
   var css         = ( app.get('css') || stylus )
     , env         = app.get('env') || 'production'
+    , dbSetUp     = false
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = app.get('dirs') || {
         public: path.join(dir, app.get('publicDir') || 'public')
@@ -28,12 +29,16 @@ module.exports = function(M, app, dir) {
     }
   ;
 
-  if ( app.get('db') ) {
+  if ( app.get('db') && ! dbSetUp ) {
     let dbConfig = app.get('db');
 
     if ( dbConfig.name ) {
       app.use(function (req, res, next) {
-        db(dbConfig, next);
+        db(dbConfig, function (err) {
+          if ( err ) { throw err; }
+          dbSetUp = true;
+          next();
+        });
       });
     }
   }
