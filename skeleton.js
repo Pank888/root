@@ -16,6 +16,7 @@ var express      = require('express')
   , path         = require('path')
   , favicon      = require('serve-favicon')
   , stylus       = require('stylus')
+  , nib          = require('nib')
 ;
 
 module.exports = function(M, app, dir) {
@@ -73,7 +74,20 @@ module.exports = function(M, app, dir) {
 
   app.use(compression({ threshold: 128 }));
 
-  app.use( css.middleware(dirs.public, {maxAge: '1d'}) );
+
+  app.use( css.middleware({
+      src: dirs.public
+    , maxage: '1d'
+    , compile: function compile(str, path) {
+        return css(str)
+                .set('filename', path)
+                .set('compress', app.get('env') === 'production' )
+                .use(nib())
+                .import('nib')
+        ;
+      }
+  }) );
+
   app.use( express.static(dirs.public, {maxAge: '1d'}) );
 
   if ( app.get('blogRoot') ) {
