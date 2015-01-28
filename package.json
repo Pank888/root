@@ -4,6 +4,6 @@
   "private": true,
   "main": "./headers.js",
   "dependencies": {
-    "magic-log": "git://github.com/express-magic/magic-log"
+    "magic-log": "file:../magic-log"
   }
 }
