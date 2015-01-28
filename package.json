@@ -4,9 +4,9 @@
   "private": true,
   "main": "./M.js",
   "dependencies": {
-    "async": "../async"
-    "express": "../express",
-    "magic-hosts": "../magic-hosts",
-    "magic-log": "../magic-log"
+    "async": "file:../async",
+    "express": "file:../express",
+    "magic-hosts": "file:../magic-hosts",
+    "magic-log": "file:../magic-log"
   }
 }
