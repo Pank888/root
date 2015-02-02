@@ -4,10 +4,10 @@
   "private": true,
   "main": "./hosts.js",
   "dependencies": {
-    "async": "file:../async",
-    "express": "file:../express",
+    "async": "file:../../node_modules/async",
+    "express": "file:../../node_modules/express",
+    "vhost": "file:../../node_modules/vhost"
     "magic-log": "file:../magic-log",
     "magic-skeleton": "file:../magic-skeleton",
-    "vhost": "file:../vhost"
   }
 }
