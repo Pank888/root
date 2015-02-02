@@ -6,8 +6,8 @@
   "dependencies": {
     "async": "file:../../node_modules/async",
     "express": "file:../../node_modules/express",
-    "vhost": "file:../../node_modules/vhost"
+    "vhost": "file:../../node_modules/vhost",
     "magic-log": "file:../magic-log",
-    "magic-skeleton": "file:../magic-skeleton",
+    "magic-skeleton": "file:../magic-skeleton"
   }
 }
