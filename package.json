@@ -4,8 +4,8 @@
   "private": true,
   "main": "./M.js",
   "dependencies": {
-    "async": "file:../async",
-    "express": "file:../express",
+    "async": "file:../../node_modules/async",
+    "express": "file:../../node_modules/express",
     "magic-hosts": "file:../magic-hosts",
     "magic-log": "file:../magic-log"
   }
