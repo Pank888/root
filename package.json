@@ -7,7 +7,7 @@
     "body-parser": "file:../../node_modules/body-parser",
     "compression": "file:../../node_modules/compression",
     "cookie-parser": "file:../../node_modules/cookie-parser",
-    "express": "file:../../../node_modules/node_modules/express",
+    "express": "file:../../../node_modules/express",
     "morgan": "file:../../node_modules/morgan",
     "nib": "file:../../node_modules/nib",
     "node-basicauth": "file:../../node_modules/node-basicauth",
