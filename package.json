@@ -12,12 +12,12 @@
     "nib": "file:../../node_modules/nib",
     "node-basicauth": "file:../../node_modules/node-basicauth",
     "serve-favicon": "file:../../node_modules/serve-favicon",
-    "stylus": "file:../../node_modules/stylus"
+    "stylus": "file:../../node_modules/stylus",
     "magic-blog": "file:../magic-blog",
     "magic-errorHandler": "file:../magic-errorHandler",
     "magic-headers": "file:../magic-headers",
     "magic-log": "file:../magic-log",
     "magic-router": "file:../magic-router",
-    "magic-utils": "file:../magic-utils",
+    "magic-utils": "file:../magic-utils"
   }
 }
