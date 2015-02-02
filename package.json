@@ -4,7 +4,7 @@
   "private": true,
   "main": "./router.js",
   "dependencies": {
-    "express": "file:../express",
+    "express": "file:../../node_modules/express",
     "magic-view": "file:../magic-view"
   }
 }
