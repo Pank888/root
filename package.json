@@ -4,20 +4,20 @@
   "private": true,
   "main": "./skeleton.js",
   "dependencies": {
-    "body-parser": "file:../body-parser",
-    "compression": "file:../compression",
-    "cookie-parser": "file:../cookie-parser",
-    "express": "file:../express",
+    "body-parser": "file:../../node_modules/body-parser",
+    "compression": "file:../../node_modules/compression",
+    "cookie-parser": "file:../../node_modules/cookie-parser",
+    "express": "file:../../../node_modules/node_modules/express",
+    "morgan": "file:../../node_modules/morgan",
+    "nib": "file:../../node_modules/nib",
+    "node-basicauth": "file:../../node_modules/node-basicauth",
+    "serve-favicon": "file:../../node_modules/serve-favicon",
+    "stylus": "file:../../node_modules/stylus"
     "magic-blog": "file:../magic-blog",
     "magic-errorHandler": "file:../magic-errorHandler",
     "magic-headers": "file:../magic-headers",
     "magic-log": "file:../magic-log",
     "magic-router": "file:../magic-router",
     "magic-utils": "file:../magic-utils",
-    "morgan": "file:../morgan",
-    "nib": "file:../nib",
-    "node-basicauth": "file:../node-basicauth",
-    "serve-favicon": "file:../serve-favicon",
-    "stylus": "file:../stylus"
   }
 }
