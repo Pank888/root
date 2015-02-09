@@ -24,6 +24,7 @@ module.exports = function(M, app, dir) {
     , faviconPath = path.join(dir, 'public', 'favicon.ico')
     , dirs        = app.get('dirs') || {
         public: path.join(dir, app.get('publicDir') || 'public')
+      , root  : dir
       , views : path.join(dir, app.get('viewsDir') || 'views')
     }
   ;
