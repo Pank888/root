@@ -2,11 +2,15 @@
   "name": "express-magic",
   "version": "0.0.6",
   "private": true,
-  "main": "./M.js",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "babel src/ --out-file index.js --source-maps"
+  },
   "dependencies": {
     "async": "file:../../node_modules/async",
     "express": "file:../../node_modules/express",
     "magic-hosts": "file:../magic-hosts",
-    "magic-log": "file:../magic-log"
+    "magic-log": "file:../magic-log",
+    "magic-utils": "file:../magic-utils"
   }
 }
