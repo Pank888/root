@@ -2,7 +2,10 @@
   "name": "magic-view",
   "version": "0.0.3",
   "private": true,
-  "main": "./view.js",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "babel src/ --out-file index.js --source-maps"
+  },
   "dependencies": {
     "magic-log": "file:../magic-log"
   }
