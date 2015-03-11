@@ -2,7 +2,10 @@
   "name": "magic-headers",
   "version": "0.0.1",
   "private": true,
-  "main": "./headers.js",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "babel src/ --out-file index.js --source-maps"
+  },
   "dependencies": {
     "magic-log": "file:../magic-log"
   }
