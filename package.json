@@ -2,7 +2,10 @@
   "name": "magic-hosts",
   "version": "0.0.1",
   "private": true,
-  "main": "./hosts.js",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "babel src/ --out-file index.js --source-maps"
+  },
   "dependencies": {
     "async": "file:../../node_modules/async",
     "express": "file:../../node_modules/express",
