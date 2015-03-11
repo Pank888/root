@@ -1,37 +1,40 @@
 'use strict';
-var express      = require('express')
-  , basicAuth    = require('node-basicauth')
-  , bodyParser   = require('body-parser')
-  , cookieParser = require('cookie-parser')
-  , compression  = require('compression')
-  , fs           = require('fs')
-  , errorHandler = require('magic-errorHandler')
-  , headers      = require('magic-headers')
-  , log          = require('magic-log')
-  , blog         = require('magic-blog')
-  , router       = require('magic-router')
-  , utils        = require('magic-utils')
-  , morgan       = require('morgan')
-  , path         = require('path')
-  , favicon      = require('serve-favicon')
-  , stylus       = require('stylus')
-  , nib          = require('nib')
-;
+import express from 'express';
+import basicAuth from 'node-basicauth';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
+import {existsSync} from 'fs';
+import {init as initAdmin} from 'magic-admin';
+import blog from 'magic-blog';
+import db from 'magic-db';
+import {handle404, handle500} from 'magic-errorHandler';
+import headers from 'magic-headers';
+import {log} from 'magic-log';
+import router from 'magic-router';
+import {each} from 'magic-utils';
+import morgan from 'morgan';
+import {join} from 'path';
+import favicon from 'serve-favicon';
+import stylus from 'stylus';
+import nib from 'nib';
 
-module.exports = function(M, app, dir) {
+module.exports = (M, app, dir) => {
   var css         = ( app.get('css') || stylus )
     , env         = app.get('env') || 'production'
-    , faviconPath = path.join(dir, 'public', 'favicon.ico')
+    , faviconPath = join(dir, 'public', 'favicon.ico')
+    , dbSettings  = app.get('dbOpts') || false
     , dirs        = app.get('dirs') || {
-        public: path.join(dir, app.get('publicDir') || 'public')
+        public: join(dir, app.get('publicDir') || 'public')
       , root  : dir
-      , views : path.join(dir, app.get('viewsDir') || 'views')
+      , cache : join(dir, app.get('cacheDir') || '.cache')
+      , views : join(dir, app.get('viewsDir') || 'views')
     }
   ;
-
+  app.set('css', css);
   app.set('dirs', dirs);
 
-  app.use(function (req, res, next) {
+  app.use( (req, res, next) => {
     req.app = app;
     next();
   });
@@ -40,15 +43,13 @@ module.exports = function(M, app, dir) {
   app.use(headers);
 
   if ( app.get('basicAuth') ) {
-    app.use(
-      basicAuth( app.get('basicAuth') )
-    );
+    app.use( basicAuth( app.get('basicAuth') ) );
   }
 
   //fs.existsSync only gets called once on first request
   if ( ! app.get('faviconChecked') && ! app.get('faviconExists') ) {
     app.set('faviconChecked', true);
-    app.set('faviconExists', fs.existsSync(faviconPath));
+    app.set('faviconExists', existsSync(faviconPath));
   }
 
   if ( app.get('faviconExists') ) {
@@ -60,11 +61,10 @@ module.exports = function(M, app, dir) {
 
   app.use(compression({ threshold: 128 }));
 
-
   app.use( css.middleware({
       src: dirs.public
     , maxage: '1d'
-    , compile: function compile(str, path) {
+    , compile: (str, path) => {
         return css(str)
                 .set('filename', path)
                 .set('compress', app.get('env') === 'production' )
@@ -74,7 +74,17 @@ module.exports = function(M, app, dir) {
       }
   }) );
 
+  app.use( express.static(join(__dirname, 'public'), {maxAge: '1w'}) );
+
   app.use( express.static(dirs.public, {maxAge: '1d'}) );
+
+  if ( dbSettings && ! app.get('db') ) {
+    app.use(db);
+  }
+
+  if ( app.enabled('admin') ) {
+    app.use( initAdmin );
+  }
 
   if ( app.get('blogRoot') ) {
     let blogRoot = app.get('blogRoot');
@@ -108,7 +118,7 @@ module.exports = function(M, app, dir) {
     let routes = app.get('router');
 
     if ( typeof routes === 'array' || typeof routes === 'object' ) {
-      utils.each(routes, function (route) {
+      each(routes, route => {
         app.use(route);
       });
     } else if ( typeof routes === 'function' ) { 
@@ -120,10 +130,10 @@ module.exports = function(M, app, dir) {
   app.use(router);
 
   //we are in a 404 error
-  app.use(errorHandler.handle404);
+  app.use(handle404);
 
   //oops, worst case fallback, 500 server error.
-  app.use(errorHandler.handle500);
+  app.use(handle500);
 
   return app;
 }
