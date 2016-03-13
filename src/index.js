@@ -1,7 +1,7 @@
 import express from 'express';
 import {Router as handler} from 'express';
 import {log, warn, error} from 'magic-log';
-import {page} from 'magic-view';
+import { page } from 'magic-pages';
 
 export function handle404(req, res, next) {
   var app  = req.app
@@ -10,7 +10,7 @@ export function handle404(req, res, next) {
   ;
   if ( r404 ) {
     log(`magic-errorHandler r404 was set in host, redirect: ${r404}`);
-    return res.redirect(r404); 
+    return res.redirect(r404);
   }
 
   warn(`404 error page called, page was: ${req.params.page}`);
