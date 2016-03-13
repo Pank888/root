@@ -1,83 +1,89 @@
 import express from 'express';
-import {waterfall} from 'async';
-import {join} from 'path';
-import {mount} from 'magic-hosts';
-import {log, success, warn} from 'magic-log';
-import config from '../../config';
-import {isCb} from 'magic-utils';
+import { waterfall } from 'async';
+import { join } from 'path';
+import { mount } from 'magic-hosts';
+import log from 'magic-server-log';
 
-var self;
+const noop = () => {};
 
-class Magic {
-  constructor() {
-    this.M = express();
-    this.cwd  = process.cwd();
-    if ( ! config.defaults ) {
-      throw Error(`server config.js missing config.defaults key, ${config}`);
-    }
-    this.conf = config.defaults[process.env] || false;
-    self = this;
-  }
+export class Magic {
+  constructor =
+    config => {
+      this.M = express();
+      this.cwd = process.cwd();
 
-  init(cb) {
-    waterfall([
-        this.spawn
-      , this.autoload
-      , this.listen
-    ]
-    , err => {
-        if ( err ) { error('magic startup error:', err); }
-        success( 'Magic listening to port:', self.M.get('port') );
+      if (!config.defaults) {
+        throw new Error(`server config.js missing config.defaults key, ${config}`);
+      }
 
-        if ( isCb(cb) ) {
+      this.conf = config.defaults[process.env] || false;
+    };
+
+  init =
+    (cb = noop) => {
+      const { spawn, autoload, listen } = this;
+      waterfall(
+        [spawn, autoload, listen],
+        err => {
+          if (err) {
+            log.error('magic startup error:', err);
+            return cb(err);
+          }
+
+          log.success('Magic listening to port:', this.M.get('port'));
+
           cb(null);
         }
-      }
-    );
-  }
-  spawn(cb) {
-    //executes before hosts
-    self.M.set('env', self.env );
-    log('conf.PORT', self.conf.PORT);
+      );
+    };
 
-    self.M.set('port', ( self.conf.PORT || process.env.PORT || 5000) );
+  spawn =
+    (cb = noop) => {
+    // executes before hosts
+      this.M.set('env', this.env);
+      log('conf.PORT', this.conf.PORT);
 
-    log(`self.M.get("port"): ${self.M.get('port')}`);
+      this.M.set('port', (this.conf.PORT || process.env.PORT || 5000));
 
-    self.M.set('dirs', {
-      'hosts' : join( self.cwd, 'hosts' )
-    });
+      log(`this.M.get("port"): ${this.M.get('port')}`);
 
-    log(`self.M spawned, env = ${self.M.get('env')}`);
-    cb(null);
-  }
+      this.M.set('dirs', {
+        'hosts': join(this.cwd, 'hosts'),
+      });
 
-  autoload(cb) {
-    //proxies to the various hosts (vhost for now, node proxy tbd)
-    log('autoload mounts');
-    mount(self.M, (err, results) => {
-      if ( isCb(cb) ) {
-        cb(err);
-      }
-    } );
-  }
+      log(`this.M spawned, env = ${this.M.get('env')}`);
+      cb(null);
+    };
 
-  listen(cb) {
-    //gets executed after all hosts executed
-    self.M.use( (req, res, next) => {
-      if ( self.conf.host ) {
-        log('magic error handler redirecting to defaulthost:', self.conf.host);
-        return res.redirect(self.conf.host);
-      }
-      warn('magic', 'final error handler, no default host found');
-      //TODO: Render this as a global 404 error page, ugly but working
-      res.send('final error handler. this is the end of this part of the internet.');
-    });
+  autoload =
+    (cb = noop) => {
+      // proxies to the various hosts (vhost for now, node proxy tbd)
+      log('autoload mounts');
+      mount(this.M, cb);
+    };
 
-    self.M.listen( self.M.get('port'), err => {
-      if ( isCb(cb) ) { cb(err); }
-    });
-  }
+  listen =
+    (cb = noop) => {
+      const port = this.M.get('port');
+
+      // gets executed after all hosts executed
+      this.M.use(
+        (req, res, next) => {
+          const { host } = this.conf;
+
+          if (host) {
+            log('magic error handler redirecting to defaulthost:', host);
+            return res.redirect(host);
+          }
+
+          log.warn('magic', 'final error handler, no default host found');
+          // TODO: Render this as a global 404 error page, ugly but working
+          res.send('final error handler. this is the end of the internet.');
+        }
+      );
+
+      this.M.listen(port, cb);
+    };
 }
 
 export default Magic;
