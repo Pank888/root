@@ -3,12 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "main": "index.js",
-  "scripts": {
-    "prepublish": "babel src/ --out-file index.js --source-maps"
-  },
   "dependencies": {
-    "express": "~4.0.0",
-    "magic-log": "file:../magic-log",
-    "magic-view": "file:../magic-view"
+    "express": "4.13.4",
+    "magic-pages": "github:magic/pages",
+    "magic-server-log": "github:magic/server-log"
+  },
+  "devDependencies": {
+    "babel-cli": "6.6.5",
+    "babel-eslint": "5.0.0",
+    "babel-preset-es2015": "6.6.0",
+    "babel-preset-stage-0": "6.5.0",
+    "chai": "3.5.0",
+    "eslint": "2.4.0",
+    "eslint-plugin-standard": "1.3.2",
+    "eslint-plugin-tdd": "0.5.0",
+    "estraverse-fb": "1.3.1",
+    "mocha": "2.4.5"
   }
 }
