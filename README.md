@@ -1,4 +1,4 @@
-# magic-headers
+# magic-http-headers
 
 magic framework http headers.
 

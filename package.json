@@ -1,5 +1,5 @@
 {
-  "name": "magic-headers",
+  "name": "magic-http-headers",
   "version": "0.0.1",
   "main": "index.js",
   "author": "Wizards & Witches <team@wiznwit.com>",
@@ -21,12 +21,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/magic/headers"
+    "url": "https://github.com/magic/http-headers"
   },
   "bugs": {
-    "url": "https://github.com/magic/headers/issues"
+    "url": "https://github.com/magic/http-headers/issues"
   },
-  "homepage": "https://github.com/magic/headers",
+  "homepage": "https://github.com/magic/http-headers",
   "contributors": [
     {
       "name": "jascha ehrenreich",
