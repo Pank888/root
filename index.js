@@ -40,7 +40,7 @@ var handle404 = exports.handle404 = function handle404(req, res) {
   });
 };
 
-var handle500 = exports.handle500 = function handle500(err, req, res, next) {
+var handle500 = exports.handle500 = function handle500(err, req, res) {
   _magicServerLog2.default.error('500 called, err: ' + err);
   res.send('500 server error');
 };
