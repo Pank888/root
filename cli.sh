@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-NODE_BIN=node_modules/.bin/
+NODE_BIN=node_modules/.bin
 
 function dev() {
   lint
+
   echo 'babelify package and watch for changes'
-  ${NODE_BIN}babel \
+  $NODE_BIN/babel \
   src/index.js \
     --watch \
     --source-maps \
@@ -16,7 +17,7 @@ function build() {
   lint
 
   echo 'babelify package'
-  ${NODE_BIN}babel \
+  $NODE_BIN/babel \
     src/index.js \
     --source-maps \
     --out-file index.js
@@ -32,10 +33,10 @@ function test() {
   mkdir test/ -p
 
   echo 'building test source'
-  ${NODE_BIN}babel \
+  $NODE_BIN/babel \
     src/test/ \
     --out-dir test/
-  ${NODE_BIN}mocha \
+  $NODE_BIN/mocha \
     ./test/index.js \
     --reporter spec \
     --ui bdd
@@ -44,14 +45,14 @@ function test() {
 
 function lint() {
   echo 'eslint start'
-  ${NODE_BIN}eslint \
+  $NODE_BIN/eslint \
     ./src/
   echo 'eslint done'
 }
 
 function lint-fix() {
   echo 'lint-fix start'
-  ${NODE_BIN}eslint \
+  $NODE_BIN/eslint \
     --fix \
     ./src/
   echo 'lint-fix end'
