@@ -1,7 +1,6 @@
 {
   "name": "magic-errorHandler",
   "version": "0.0.1",
-  "private": true,
   "main": "index.js",
   "author": "Wizards & Witches <team@wiznwit.com>",
   "license": "AGPL-3.0",
