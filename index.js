@@ -5,10 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-// import { init as initAdmin } from 'magic-admin';
-// import blog from 'magic-blog';
-// import db from 'magic-db';
-
 
 var _express = require('express');
 
@@ -64,6 +60,10 @@ var _nib2 = _interopRequireDefault(_nib);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import { init as initAdmin } from 'magic-admin';
+// import blog from 'magic-blog';
+// import db from 'magic-db';
+
 exports.default = function (M, app, dir) {
   var css = app.get('css') || _stylus2.default;
   var env = app.get('env') || 'production';
@@ -86,8 +86,7 @@ exports.default = function (M, app, dir) {
   });
 
   // set expiry headers
-  var customHeaders = _extends({}, app.get('headers'), _magicHttpHeaders2.default);
-  app.use(customHeaders);
+  app.use(_extends({}, _magicHttpHeaders2.default, app.get('headers')));
 
   var basicAuthConfig = app.get('basicAuth');
   if (basicAuthConfig) {
