@@ -4,9 +4,6 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { existsSync } from 'fs';
-// import { init as initAdmin } from 'magic-admin';
-// import blog from 'magic-blog';
-// import db from 'magic-db';
 import { isArray, isObject } from 'magic-types';
 import { handle404, handle500 } from 'magic-errorHandler';
 import headers from 'magic-http-headers';
@@ -16,6 +13,10 @@ import { join } from 'path';
 import favicon from 'serve-favicon';
 import stylus from 'stylus';
 import nib from 'nib';
+
+// import { init as initAdmin } from 'magic-admin';
+// import blog from 'magic-blog';
+// import db from 'magic-db';
 
 export default
   (M, app, dir) => {
@@ -42,11 +43,10 @@ export default
       });
 
     // set expiry headers
-    const customHeaders = {
-      ...app.get('headers'),
+    app.use({
       ...headers,
-    };
-    app.use(customHeaders);
+      ...app.get('headers'),
+    });
 
     const basicAuthConfig = app.get('basicAuth');
     if (basicAuthConfig) {
