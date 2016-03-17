@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { page } from 'magic-pages';
+import { page } from './pages';
 
 const noop = () => {};
 
