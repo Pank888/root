@@ -1,11 +1,7 @@
 {
   "name": "magic-skeleton",
   "version": "0.0.2",
-  "private": true,
   "main": "index.js",
-  "scripts": {
-    "prepublish": "babel src/ --out-file index.js --source-maps"
-  },
   "dependencies": {
     "body-parser": "1.15.0",
     "compression": "1.6.1",
@@ -14,7 +10,7 @@
     "magic-errorHandler": "github:magic/errorHandler",
     "magic-http-headers": "github:magic/http-headers",
     "magic-server-log": "github:magic/server-log",
-    "magic-router": "github:magic/router",
+    "magic-pages": "github:magic/pages",
     "morgan": "1.7.0",
     "nib": "1.1.0",
     "node-basicauth": "0.0.9",

@@ -2,12 +2,14 @@
 
 NODE_BIN=node_modules/.bin
 
+SRC_GLOB=src/*
+
 function dev() {
   lint
 
   echo 'babelify package and watch for changes'
   $NODE_BIN/babel \
-  src/index.js \
+  $SRC_GLOB \
     --watch \
     --source-maps \
     --out-file index.js
@@ -18,7 +20,7 @@ function build() {
 
   echo 'babelify package'
   $NODE_BIN/babel \
-    src/index.js \
+    $SRC_GLOB \
     --source-maps \
     --out-file index.js
   echo 'build done'
@@ -46,7 +48,7 @@ function test() {
 function lint() {
   echo 'eslint start'
   $NODE_BIN/eslint \
-    ./src/
+    $SRC_GLOB
   echo 'eslint done'
 }
 
@@ -54,7 +56,7 @@ function lint-fix() {
   echo 'lint-fix start'
   $NODE_BIN/eslint \
     --fix \
-    ./src/
+    $SRC_GLOB
   echo 'lint-fix end'
 }
 

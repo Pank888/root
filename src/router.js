@@ -1,9 +1,11 @@
-import express from 'express';
-import {page} from 'magic-view';
+import { Router } from 'express';
+import { page } from 'magic-pages';
 
-var router = express.Router();
+const noop = () => {};
 
-router.get('/', function (req, res, next) {
+var router = Router();
+
+router.get('/', (req, res, next = noop) => {
   res.locals.page = 'index';
   page(req, res, next);
 });
