@@ -10,7 +10,6 @@
     "magic-errorHandler": "github:magic/errorHandler",
     "magic-http-headers": "github:magic/http-headers",
     "magic-server-log": "github:magic/server-log",
-    "magic-pages": "github:magic/pages",
     "morgan": "1.7.0",
     "nib": "1.1.0",
     "node-basicauth": "0.0.9",
