@@ -7,7 +7,6 @@
     "compression": "1.6.1",
     "cookie-parser": "1.4.1",
     "express": "4.13.4",
-    "magic-errorHandler": "github:magic/errorHandler",
     "magic-http-headers": "github:magic/http-headers",
     "magic-server-log": "github:magic/server-log",
     "morgan": "1.7.0",
