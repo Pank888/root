@@ -7,7 +7,7 @@ function dev() {
 
   echo 'babelify package and watch for changes'
   $NODE_BIN/babel \
-  src/index.js \
+  src/* \
     --watch \
     --source-maps \
     --out-file index.js
@@ -18,7 +18,7 @@ function build() {
 
   echo 'babelify package'
   $NODE_BIN/babel \
-    src/index.js \
+    src/* \
     --source-maps \
     --out-file index.js
   echo 'build done'

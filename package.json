@@ -7,7 +7,8 @@
     "async": "1.5.2",
     "express": "4.13.4",
     "magic-hosts": "github:magic/hosts",
-    "magic-server-log": "github:magic/server-log"
+    "magic-server-log": "github:magic/server-log",
+    "vhost": "3.0.2"
   },
   "devDependencies": {
     "babel-cli": "6.6.5",
