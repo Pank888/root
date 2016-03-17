@@ -5,14 +5,16 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { existsSync } from 'fs';
 import { isArray, isObject } from 'magic-types';
-import { handle404, handle500 } from 'magic-errorHandler';
 import headers from 'magic-http-headers';
-import router from 'magic-router';
 import morgan from 'morgan';
 import { join } from 'path';
 import favicon from 'serve-favicon';
 import stylus from 'stylus';
 import nib from 'nib';
+
+import router from './router';
+import handle404 from './handle404';
+import handle500 from './handle500';
 
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';

@@ -26,3 +26,5 @@ export const handle404 =
       }
     });
   };
+
+export default handle404;
