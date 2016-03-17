@@ -1,7 +1,7 @@
 import express from 'express';
 import { waterfall } from 'async';
 import { join } from 'path';
-import { mount } from 'magic-hosts';
+import { mount } from './hosts';
 import log from 'magic-server-log';
 
 const noop = () => {};

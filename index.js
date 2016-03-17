@@ -104,7 +104,7 @@ var _async = require('async');
 
 var _path = require('path');
 
-var _magicHosts = require('magic-hosts');
+var _hosts = require('./hosts');
 
 var _magicServerLog = require('magic-server-log');
 
@@ -174,7 +174,7 @@ var Magic = exports.Magic = function Magic() {
 
     // proxies to the various hosts (vhost for now, node proxy tbd)
     (0, _magicServerLog2.default)('autoload mounts');
-    (0, _magicHosts.mount)(_this.M, cb);
+    (0, _hosts.mount)(_this.M, cb);
   };
 
   this.listen = function () {
