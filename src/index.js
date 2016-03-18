@@ -5,7 +5,6 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import { existsSync } from 'fs';
 import { isArray, isObject } from 'magic-types';
-import headers from 'magic-http-headers';
 import morgan from 'morgan';
 import { join } from 'path';
 import favicon from 'serve-favicon';
@@ -13,6 +12,7 @@ import stylus from 'stylus';
 import nib from 'nib';
 
 import router from './router';
+import headers from './headers';
 import handle404 from './handle404';
 import handle500 from './handle500';
 
