@@ -68,18 +68,6 @@ var getTemplate = function getTemplate(_ref, _ref2) {
   };
 };
 
-var getPageSlug = function getPageSlug(_ref3) {
-  var _ref3$params = _ref3.params;
-  var params = _ref3$params === undefined ? {} : _ref3$params;
-  return params.page || 'index';
-};
-
-var getPageParentSlug = function getPageParentSlug(_ref4) {
-  var _ref4$params = _ref4.params;
-  var params = _ref4$params === undefined ? {} : _ref4$params;
-  return params.dir || false;
-};
-
 var page = exports.page = function page(req, res) {
   var next = arguments.length <= 2 || arguments[2] === undefined ? noop : arguments[2];
 
@@ -88,38 +76,14 @@ var page = exports.page = function page(req, res) {
   var page = _getTemplate.page;
   var template = _getTemplate.template;
 
-  var db = req.app.get('db');
 
   res.locals = _extends({}, res.locals, {
     page: page,
     template: template
   });
 
-  if (!db || !db.pages) {
-    return renderTemplate(res, template, next);
-  }
+  (0, _magicServerLog2.default)('render page: ', page, 'with template', template);
 
-  _magicServerLog2.default.success('db.pages is set');
-  var parentSlug = getPageParentSlug(req);
-  var pageQuery = {
-    slug: getPageSlug(req)
-  };
-
-  if (parentSlug) {
-    pageQuery.parent = parentSlug;
-  }
-
-  db.pages.findOne(pageQuery, function (err, page) {
-    if (err) {
-      return _magicServerLog2.default.error(err);
-    }
-
-    if (!page) {
-      return renderTemplate(res, template, next);
-    }
-
-    // TODO: actually render db page
-    console.log(page);
-  });
+  return renderTemplate(res, template, next);
 };
 //# sourceMappingURL=pages.js.map

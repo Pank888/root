@@ -5,110 +5,220 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Magic = undefined;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _express = require('express');
 
 var _express2 = _interopRequireDefault(_express);
 
-var _async = require('async');
+var _nodeBasicauth = require('node-basicauth');
+
+var _nodeBasicauth2 = _interopRequireDefault(_nodeBasicauth);
+
+var _bodyParser = require('body-parser');
+
+var _bodyParser2 = _interopRequireDefault(_bodyParser);
+
+var _cookieParser = require('cookie-parser');
+
+var _cookieParser2 = _interopRequireDefault(_cookieParser);
+
+var _compression = require('compression');
+
+var _compression2 = _interopRequireDefault(_compression);
+
+var _fs = require('fs');
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _morgan = require('morgan');
+
+var _morgan2 = _interopRequireDefault(_morgan);
 
 var _path = require('path');
 
-var _hosts = require('./hosts');
+var _serveFavicon = require('serve-favicon');
+
+var _serveFavicon2 = _interopRequireDefault(_serveFavicon);
+
+var _stylus = require('stylus');
+
+var _stylus2 = _interopRequireDefault(_stylus);
+
+var _nib = require('nib');
+
+var _nib2 = _interopRequireDefault(_nib);
+
+var _magicTypes = require('magic-types');
 
 var _magicServerLog = require('magic-server-log');
 
 var _magicServerLog2 = _interopRequireDefault(_magicServerLog);
 
+var _router = require('./router');
+
+var _router2 = _interopRequireDefault(_router);
+
+var _headers = require('./headers');
+
+var _headers2 = _interopRequireDefault(_headers);
+
+var _handle = require('./errors/handle404');
+
+var _handle2 = _interopRequireDefault(_handle);
+
+var _handle3 = require('./errors/handle500');
+
+var _handle4 = _interopRequireDefault(_handle3);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+// import { init as initAdmin } from 'magic-admin';
+// import blog from 'magic-blog';
+// import db from 'magic-db';
 
-var noop = function noop() {};
+var Magic = exports.Magic = function Magic(app, dir) {
+  var css = app.get('css') || _stylus2.default;
+  // const dbSettings = app.get('dbOpts') || false;
+  var routes = app.get('router');
+  var env = app.get('env') || 'production';
+  var faviconPath = (0, _path.join)(dir, 'public', 'favicon.ico');
+  var publicDir = app.get('publicDir') || 'public';
+  var viewDir = app.get('viewDir') || 'views';
+  var appDirs = app.get('dirs');
+  var basicAuthConfig = app.get('basicAuth');
+  var port = app.get('port') || 5000;
+  var viewEngine = app.get('view engine') || 'jade';
 
-var Magic = exports.Magic = function Magic() {
-  var _this = this;
+  var dirs = _extends({
+    root: dir,
+    public: (0, _path.join)(dir, publicDir),
+    views: (0, _path.join)(dir, viewDir)
+  }, appDirs);
 
-  _classCallCheck(this, Magic);
+  console.log({ dirs: dirs, env: env });
 
-  this.constructor = function (config) {
-    _this.M = (0, _express2.default)();
-    _this.cwd = process.cwd();
+  app.set('css', css);
+  app.set('dirs', dirs);
 
-    if (!config.defaults) {
-      throw new Error('server config.js missing config.defaults key, ' + config);
+  // set req.app to use in middleware
+  app.use(function (req, res, next) {
+    req.app = app;
+    next();
+  });
+
+  // set expiry headers
+  app.use(_headers2.default);
+
+  // enable http basicAuth
+  if (basicAuthConfig) {
+    app.use((0, _nodeBasicauth2.default)(basicAuthConfig));
+  }
+
+  // fs.existsSync only gets called once on first request
+  if (!app.get('faviconChecked') && !app.get('faviconExists')) {
+    app.set('faviconChecked', true);
+    app.set('faviconExists', _fs2.default.existsSync(faviconPath));
+  }
+
+  if (app.get('faviconExists')) {
+    app.use((0, _serveFavicon2.default)(faviconPath));
+  }
+
+  app.set('views', dirs.views);
+  app.set('view engine', viewEngine);
+
+  app.use((0, _compression2.default)({ threshold: 128 }));
+
+  var cssMiddleware = function cssMiddleware(str, path) {
+    return css(str).set('filename', path).set('compress', env === 'production').use((0, _nib2.default)()).import('nib');
+  };
+
+  app.use(css.middleware({
+    src: dirs.public,
+    maxage: '1d',
+    compile: cssMiddleware
+  }));
+
+  app.use(_express2.default.static((0, _path.join)(__dirname, 'public'), { maxAge: '1w' }));
+
+  app.use(_express2.default.static(dirs.public, { maxAge: '1d' }));
+
+  // if (dbSettings && !app.get('db')) {
+  //   app.use(db);
+  // }
+
+  // if (app.enabled('admin')) {
+  //   app.use(initAdmin);
+  // }
+
+  /*
+   TODO: reenable
+   if (app.get('blogRoot')) {
+   let blogRoot = app.get('blogRoot');
+   if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
+   blogRoot = 'blog';
+   }
+   if (blogRoot.charAt(0) !== '/') {
+   blogRoot = '/' + blogRoot;
+   } else {
+   app.set('blogRoot', blogRoot.substr(1));
+   }
+   app.use(blogRoot, blog);
+   }
+   */
+
+  var logLevel = app.get('logLevel') || 'combined';
+
+  // logging
+  app.use((0, _morgan2.default)(logLevel));
+
+  // if host sets bodyparser to true, init it
+  if (app.enabled('bodyParser')) {
+    app.use(_bodyParser2.default.json());
+    app.use(_bodyParser2.default.urlencoded({ extended: false }));
+  }
+
+  // if host sets cookieparser to true, init it:
+  if (app.enabled('cookieParser')) {
+    app.use((0, _cookieParser2.default)());
+  }
+
+  // load host specific router
+  if (routes) {
+    if ((0, _magicTypes.isArray)(routes) || (0, _magicTypes.isObject)(routes)) {
+      Object.keys(routes).forEach(function (key) {
+        if ((0, _magicTypes.isFunction)(routes[key])) {
+          app.use(routes[key]);
+        }
+      });
+    } else if ((0, _magicTypes.isFunction)(routes)) {
+      app.use(routes);
+    }
+  }
+
+  // default router
+  app.use(_router2.default);
+
+  // we are in a 404 error
+  app.use(_handle2.default);
+
+  // oops, worst case fallback, 500 server error.
+  app.use(_handle4.default);
+
+  app.get('*', function (req, res, next) {
+    console.log('catchall');
+    res.status(200).send('yay');
+  });
+
+  app.listen(port, function (err) {
+    if (err) {
+      _magicServerLog2.default.error(err);
     }
 
-    _this.conf = config.defaults[process.env] || false;
-  };
+    (0, _magicServerLog2.default)('app listening to port ' + port);
+  });
 
-  this.init = function () {
-    var cb = arguments.length <= 0 || arguments[0] === undefined ? noop : arguments[0];
-    var spawn = _this.spawn;
-    var autoload = _this.autoload;
-    var listen = _this.listen;
-
-    (0, _async.waterfall)([spawn, autoload, listen], function (err) {
-      if (err) {
-        _magicServerLog2.default.error('magic startup error:', err);
-        return cb(err);
-      }
-
-      _magicServerLog2.default.success('Magic listening to port:', _this.M.get('port'));
-
-      cb(null);
-    });
-  };
-
-  this.spawn = function () {
-    var cb = arguments.length <= 0 || arguments[0] === undefined ? noop : arguments[0];
-
-    // executes before hosts
-    _this.M.set('env', _this.env);
-    (0, _magicServerLog2.default)('conf.PORT', _this.conf.PORT);
-
-    _this.M.set('port', _this.conf.PORT || process.env.PORT || 5000);
-
-    (0, _magicServerLog2.default)('this.M.get("port"): ' + _this.M.get('port'));
-
-    _this.M.set('dirs', {
-      'hosts': (0, _path.join)(_this.cwd, 'hosts')
-    });
-
-    (0, _magicServerLog2.default)('this.M spawned, env = ' + _this.M.get('env'));
-    cb(null);
-  };
-
-  this.autoload = function () {
-    var cb = arguments.length <= 0 || arguments[0] === undefined ? noop : arguments[0];
-
-    // proxies to the various hosts (vhost for now, node proxy tbd)
-    (0, _magicServerLog2.default)('autoload mounts');
-    (0, _hosts.mount)(_this.M, cb);
-  };
-
-  this.listen = function () {
-    var cb = arguments.length <= 0 || arguments[0] === undefined ? noop : arguments[0];
-
-    var port = _this.M.get('port');
-
-    // gets executed after all hosts executed
-    _this.M.use(function (req, res, next) {
-      var host = _this.conf.host;
-
-
-      if (host) {
-        (0, _magicServerLog2.default)('magic error handler redirecting to defaulthost:', host);
-        return res.redirect(host);
-      }
-
-      _magicServerLog2.default.warn('magic', 'final error handler, no default host found');
-      // TODO: Render this as a global 404 error page, ugly but working
-      res.send('final error handler. this is the end of the internet.');
-    });
-
-    _this.M.listen(port, cb);
-  };
+  return app;
 };
-
-exports.default = Magic;
 //# sourceMappingURL=index.js.map

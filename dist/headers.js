@@ -6,10 +6,11 @@ Object.defineProperty(exports, "__esModule", {
 var noop = function noop() {};
 
 // http header middleware function
-var headers = exports.headers = function headers(req, res) {
+var headers = exports.headers = function headers(_ref, res) {
+  var _ref$app = _ref.app;
+  var app = _ref$app === undefined ? {} : _ref$app;
   var next = arguments.length <= 2 || arguments[2] === undefined ? noop : arguments[2];
 
-  var app = req.app;
   var env = app.get('env') || 'production';
   var poweredBy = app.get('X-Powered-By') || 'Magic';
   var maxAge = app.get('maxAge') || 60 * 60 * 24 * 7; // default to 7 days
