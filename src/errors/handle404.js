@@ -1,5 +1,5 @@
 import log from 'magic-server-log';
-import { page } from './pages';
+import { page } from '../pages';
 
 const noop = () => {};
 

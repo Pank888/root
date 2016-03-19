@@ -9,7 +9,7 @@ var _magicServerLog = require('magic-server-log');
 
 var _magicServerLog2 = _interopRequireDefault(_magicServerLog);
 
-var _pages = require('./pages');
+var _pages = require('../pages');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
