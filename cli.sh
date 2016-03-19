@@ -2,7 +2,8 @@
 
 NODE_BIN=node_modules/.bin
 
-SRC_GLOB=src/*
+SRC_GLOB=src
+DIST_DIR=dist
 
 function dev() {
   lint
@@ -12,7 +13,8 @@ function dev() {
   $SRC_GLOB \
     --watch \
     --source-maps \
-    --out-file index.js
+    --source-root ./src/index.js \
+    --out-dir $DIST_DIR
 }
 
 function build() {
@@ -22,7 +24,8 @@ function build() {
   $NODE_BIN/babel \
     $SRC_GLOB \
     --source-maps \
-    --out-file index.js
+    --source-root ./src/index.js \
+    --out-dir $DIST_DIR
   echo 'build done'
 }
 
@@ -63,8 +66,7 @@ function lint-fix() {
 function clean() {
   echo 'clean start'
   rm -rf \
-    ./index.js \
-    ./index.js.map \
+    ./dist \
     ./test
   echo 'clean end'
 }
