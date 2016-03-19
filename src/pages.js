@@ -8,54 +8,64 @@ export const renderTemplate =
   (res, template, next = noop) => {
     log(`${libName}: rendering template ${template}`);
     res.render(template, (err, html) => {
-      if (err) { log.error(`magic-view: error in res.render ${err}`); }
+      if (err) {
+        log.error(`${libName}: error in res.render ${err}`);
+      }
+
       if (!html) {
         log.error(`${libName}: html file was empty for template ${template}`);
       }
-      if (err || !html) { return next(); } // 404, no error passing!
+
+      if (err || !html) {
+        // 404, no error passing, next will handle it!
+        return next();
+      }
+
       res.status(200).send(html);
     });
   };
 
 const getPage =
-  (req, res) => {
-    if (res.locals.page) { return res.locals.page; }
-    return (req.params && req.params.page) ? req.params.page : 'index';
-  };
+  (params = {}, locals = {}) =>
+    locals.page || params.page || 'index';
 
 const getTemplate =
-  (req, res) => {
-    const page = getPage(req, res);
+  ({ params = {}}, { locals = {}}) => {
+    const page = getPage(params, locals);
     let template = 'pages/';
 
-    if (req.params && req.params.dir) {
-      template += req.params.dir + '/';
+    if (params && params.dir) {
+      template += params.dir + '/';
     }
 
     template += page;
 
     log(`${libName} Rendering Page: ${page} with template ${template}`);
-    res.locals.page = page;
-    res.locals.template = template;
-    return template;
+
+    return {
+      page,
+      template,
+    };
   };
 
 const getPageSlug =
-  req =>
-    req.params && req.params.page
-      ? req.params.page
-      : 'index';
+  ({ params = {}}) =>
+    params.page || 'index';
 
 const getPageParentSlug =
-  req =>
-    req.params && req.params.dir
-      ? req.params.dir
-      : false;
+  ({ params = {}}) =>
+    params.dir || false;
 
 export const page =
   (req, res, next = noop) => {
-    const template = getTemplate(req, res);
+    const { page, template } = getTemplate(req, res);
     const db = req.app.get('db');
+
+    res.locals = {
+      ...res.locals,
+      page,
+      template,
+    };
 
     if (!db || !db.pages) {
       return renderTemplate(res, template, next);
