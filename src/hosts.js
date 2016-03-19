@@ -2,8 +2,8 @@ import { readdir, exists } from 'fs';
 import { waterfall, filter, map } from 'async';
 import { join } from 'path';
 import vhost from 'vhost';
-import { log } from 'magic-log';
-import skeleton from 'magic-skeleton';
+import { log } from 'magic-server-log';
+import skeleton from './skeleton';
 
 const cwd = process.cwd();
 const hostRootDir = join(cwd, 'hosts');
