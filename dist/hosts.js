@@ -15,11 +15,11 @@ var _vhost = require('vhost');
 
 var _vhost2 = _interopRequireDefault(_vhost);
 
-var _magicLog = require('magic-log');
+var _magicServerLog = require('magic-server-log');
 
-var _magicSkeleton = require('magic-skeleton');
+var _skeleton = require('./skeleton');
 
-var _magicSkeleton2 = _interopRequireDefault(_magicSkeleton);
+var _skeleton2 = _interopRequireDefault(_skeleton);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70,10 +70,10 @@ var mountHosts = function mountHosts(args) {
 var mountHost = function mountHost(host) {
   var cb = arguments.length <= 1 || arguments[1] === undefined ? noop : arguments[1];
 
-  (0, _magicLog.log)('host', host);
+  (0, _magicServerLog.log)('host', host);
   var hostDir = (0, _path.join)(hostRootDir, host);
   var hostApp = require((0, _path.join)(hostDir, 'H.js'));
-  var skel = (0, _magicSkeleton2.default)(M, hostApp, hostDir);
+  var skel = (0, _skeleton2.default)(M, hostApp, hostDir);
   var config = require((0, _path.join)(hostDir, 'config'));
   var env = skel.get('env') || 'production';
   var hosts = config.hosts[env] ? config.hosts[env] : [];
@@ -84,7 +84,7 @@ var mountHost = function mountHost(host) {
 
   hosts.forEach(function (host) {
     M.use((0, _vhost2.default)(host, skel));
-    (0, _magicLog.log)('vhosts started for subhost ' + host);
+    (0, _magicServerLog.log)('vhosts started for subhost ' + host);
   });
 
   cb(null);
