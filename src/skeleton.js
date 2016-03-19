@@ -13,8 +13,8 @@ import nib from 'nib';
 
 import router from './router';
 import headers from './headers';
-import handle404 from './handle404';
-import handle500 from './handle500';
+import handle404 from './errors/handle404';
+import handle500 from './errors/handle500';
 
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';
