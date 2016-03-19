@@ -1,14 +1,16 @@
 {
   "name": "magic-root",
   "version": "0.0.1",
-  "private": true,
   "main": "dist/index.js",
+  "author": "Wizards & Witches <team@wiznwit.com>",
+  "license": "AGPL-3.0",
   "dependencies": {
     "async": "1.5.2",
     "body-parser": "1.15.0",
     "compression": "1.6.1",
     "cookie-parser": "1.4.1",
     "express": "4.13.4",
+    "jade": "1.11.0",
     "magic-server-log": "github:magic/server-log",
     "magic-types": "github:magic/types",
     "morgan": "1.7.0",
@@ -30,5 +32,19 @@
     "eslint-plugin-tdd": "0.5.0",
     "estraverse-fb": "1.3.1",
     "mocha": "2.4.5"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/magic/root"
+  },
+  "bugs": {
+    "url": "https://github.com/magic/root/issues"
+  },
+  "homepage": "https://github.com/magic/root",
+  "contributors": [
+    {
+      "name": "jascha ehrenreich",
+      "github": "jaeh"
+    }
+  ]
 }
