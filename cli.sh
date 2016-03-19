@@ -71,6 +71,9 @@ function clean() {
   echo 'clean end'
 }
 
+function run() {
+	node dist/index.js
+}
 function help() {
   echo " \n\
 make [task] \n\

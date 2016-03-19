@@ -27,5 +27,8 @@ lint-fix:
 clean:
 	@./cli.sh clean
 
+run:
+	@./cli.sh run
+
 help:
 	@./cli.sh help
