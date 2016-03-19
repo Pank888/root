@@ -48,18 +48,9 @@ const getTemplate =
     };
   };
 
-const getPageSlug =
-  ({ params = {}}) =>
-    params.page || 'index';
-
-const getPageParentSlug =
-  ({ params = {}}) =>
-    params.dir || false;
-
 export const page =
   (req, res, next = noop) => {
     const { page, template } = getTemplate(req, res);
-    const db = req.app.get('db');
 
     res.locals = {
       ...res.locals,
@@ -67,30 +58,7 @@ export const page =
       template,
     };
 
-    if (!db || !db.pages) {
-      return renderTemplate(res, template, next);
-    }
+    log('render page: ', page, 'with template', template);
 
-    log.success('db.pages is set');
-    const parentSlug = getPageParentSlug(req);
-    const pageQuery = {
-      slug: getPageSlug(req),
-    };
-
-    if (parentSlug) {
-      pageQuery.parent = parentSlug;
-    }
-
-    db.pages.findOne(pageQuery, (err, page) => {
-      if (err) {
-        return log.error(err);
-      }
-
-      if (!page) {
-        return renderTemplate(res, template, next);
-      }
-
-      // TODO: actually render db page
-      console.log(page);
-    });
+    return renderTemplate(res, template, next);
   };
