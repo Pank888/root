@@ -20,24 +20,26 @@ function dev() {
 function build() {
   lint
 
-  echo 'babelify package'
+  echo "babelify package"
+
   $NODE_BIN/babel \
     $SRC_GLOB \
     --source-maps \
     --source-root ./src/index.js \
     --out-dir $DIST_DIR
-  echo 'build done'
+
+  echo "build done"
 }
 
 function test() {
   build
 
-  echo 'test start'
-  echo 'remove and readd test directory'
+  echo "test start"
+  echo "remove and readd test directory"
   rm -rf test/*
   mkdir test/ -p
 
-  echo 'building test source'
+  echo "building test source"
   $NODE_BIN/babel \
     src/test/ \
     --out-dir test/
@@ -45,35 +47,36 @@ function test() {
     ./test/index.js \
     --reporter spec \
     --ui bdd
-  echo 'test done'
+  echo "test done"
 }
 
 function lint() {
-  echo 'eslint start'
+  echo "eslint start"
   $NODE_BIN/eslint \
     $SRC_GLOB
-  echo 'eslint done'
+  echo "eslint done"
 }
 
 function lint-fix() {
-  echo 'lint-fix start'
+  echo "lint-fix start"
   $NODE_BIN/eslint \
     --fix \
     $SRC_GLOB
-  echo 'lint-fix end'
+  echo "lint-fix end"
 }
 
 function clean() {
-  echo 'clean start'
+  echo "clean start"
   rm -rf \
     ./dist \
     ./test
-  echo 'clean end'
+  echo "clean end"
 }
 
 function run() {
-	node dist/index.js
+  node dist/index.js
 }
+
 function help() {
   echo " \n\
 make [task] \n\
