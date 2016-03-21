@@ -27,6 +27,10 @@ var _compression = require('compression');
 
 var _compression2 = _interopRequireDefault(_compression);
 
+var _babelMiddleware = require('babel-middleware');
+
+var _babelMiddleware2 = _interopRequireDefault(_babelMiddleware);
+
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
@@ -77,7 +81,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import blog from 'magic-blog';
 // import db from 'magic-db';
 
-var Magic = exports.Magic = function Magic(app, dir) {
+var Magic = exports.Magic = function Magic(app) {
+  var dir = process.cwd();
   var css = app.get('css') || _stylus2.default;
   // const dbSettings = app.get('dbOpts') || false;
   var routes = app.get('router');
@@ -89,6 +94,7 @@ var Magic = exports.Magic = function Magic(app, dir) {
   var basicAuthConfig = app.get('basicAuth');
   var port = app.get('port') || 5000;
   var viewEngine = app.get('view engine') || 'jade';
+  var babelConfig = app.get('babel');
 
   var dirs = _extends({
     root: dir,
@@ -106,6 +112,10 @@ var Magic = exports.Magic = function Magic(app, dir) {
     req.app = app;
     next();
   });
+
+  if (babelConfig) {
+    app.use('/js/', (0, _babelMiddleware2.default)(babelConfig));
+  }
 
   // set expiry headers
   app.use(_headers2.default);
