@@ -3,6 +3,7 @@ import basicAuth from 'node-basicauth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import babel from 'babel-middleware';
 import fs from 'fs';
 import morgan from 'morgan';
 import { join } from 'path';
@@ -22,7 +23,8 @@ import handle500 from './errors/handle500';
 // import blog from 'magic-blog';
 // import db from 'magic-db';
 
-export const Magic = (app, dir) => {
+export const Magic = app => {
+  const dir = process.cwd();
   const css = app.get('css') || stylus;
   // const dbSettings = app.get('dbOpts') || false;
   const routes = app.get('router');
@@ -34,6 +36,7 @@ export const Magic = (app, dir) => {
   const basicAuthConfig = app.get('basicAuth');
   const port = app.get('port') || 5000;
   const viewEngine = app.get('view engine') || 'jade';
+  const babelConfig = app.get('babel');
 
   const dirs = {
     root: dir,
@@ -53,6 +56,10 @@ export const Magic = (app, dir) => {
       req.app = app;
       next();
     });
+
+  if (babelConfig) {
+    app.use('/js/', babel(babelConfig));
+  }
 
   // set expiry headers
   app.use(headers);
