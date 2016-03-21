@@ -82,7 +82,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import db from 'magic-db';
 
 var Magic = exports.Magic = function Magic(app) {
-  var dir = process.cwd();
+  var dir = arguments.length <= 1 || arguments[1] === undefined ? process.cwd() : arguments[1];
+
   var css = app.get('css') || _stylus2.default;
   // const dbSettings = app.get('dbOpts') || false;
   var routes = app.get('router');

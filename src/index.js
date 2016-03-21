@@ -23,8 +23,7 @@ import handle500 from './errors/handle500';
 // import blog from 'magic-blog';
 // import db from 'magic-db';
 
-export const Magic = app => {
-  const dir = process.cwd();
+export const Magic = (app, dir = process.cwd()) => {
   const css = app.get('css') || stylus;
   // const dbSettings = app.get('dbOpts') || false;
   const routes = app.get('router');
