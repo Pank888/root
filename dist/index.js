@@ -146,8 +146,8 @@ var Magic = exports.Magic = function Magic(app) {
     compile: cssMiddleware
   }));
 
-  if ((0, _magicTypes.isArray)(babelifyFiles)) {
-    babelifyFiles.forEach(function (f) {
+  if ((0, _magicTypes.isString)(babelifyFiles) || (0, _magicTypes.isArray)(babelifyFiles)) {
+    [].concat(babelifyFiles).forEach(function (f) {
       // Precompile a browserified file at a path
       var fileUrl = '/js/' + f + '.js';
       var bundleUrl = 'js/' + f + '/index.js';

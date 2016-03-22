@@ -11,7 +11,7 @@ import favicon from 'serve-favicon';
 import stylus from 'stylus';
 import nib from 'nib';
 
-import { isArray, isObject, isFunction } from 'magic-types';
+import { isArray, isObject, isFunction, isString } from 'magic-types';
 import log from 'magic-server-log';
 
 import router from './router';
@@ -95,11 +95,7 @@ export const Magic = (app) => {
   }));
 
   if (isString(babelifyFiles) || isArray(babelifyFiles)) {
-    if (isString(babelifyFiles) {
-      babelifyFiles = [babelifyFiles];
-    }
-
-    babelifyFiles.forEach(
+    [].concat(babelifyFiles).forEach(
       f => {
         // Precompile a browserified file at a path
         const fileUrl = `/js/${f}.js`;
