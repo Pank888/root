@@ -3,7 +3,7 @@ import basicAuth from 'node-basicauth';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
-import babel from 'babel-middleware';
+import babelify from 'express-babelify-middleware';
 import fs from 'fs';
 import morgan from 'morgan';
 import { join } from 'path';
@@ -36,7 +36,6 @@ export const Magic = (app) => {
   const basicAuthConfig = app.get('basicAuth');
   const port = app.get('port') || 5000;
   const viewEngine = app.get('view engine') || 'jade';
-  const babelConfig = app.get('babel');
 
   const dirs = {
     root: dir,
@@ -56,10 +55,6 @@ export const Magic = (app) => {
       req.app = app;
       next();
     });
-
-  if (babelConfig) {
-    app.use('/js/', babel(babelConfig));
-  }
 
   // set expiry headers
   app.use(headers);
@@ -97,6 +92,11 @@ export const Magic = (app) => {
     maxage: '1d',
     compile: cssMiddleware,
   }));
+
+  if (babelify) {
+    // Precompile a browserified file at a path
+    app.use('/js/bundle.js', babelify('js/bundle/index.js'));
+  }
 
   app.use(express.static(join(__dirname, 'public'), { maxAge: '1w' }));
 

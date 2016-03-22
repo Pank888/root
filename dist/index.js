@@ -27,9 +27,9 @@ var _compression = require('compression');
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _babelMiddleware = require('babel-middleware');
+var _expressBabelifyMiddleware = require('express-babelify-middleware');
 
-var _babelMiddleware2 = _interopRequireDefault(_babelMiddleware);
+var _expressBabelifyMiddleware2 = _interopRequireDefault(_expressBabelifyMiddleware);
 
 var _fs = require('fs');
 
@@ -94,7 +94,6 @@ var Magic = exports.Magic = function Magic(app) {
   var basicAuthConfig = app.get('basicAuth');
   var port = app.get('port') || 5000;
   var viewEngine = app.get('view engine') || 'jade';
-  var babelConfig = app.get('babel');
 
   var dirs = _extends({
     root: dir,
@@ -112,10 +111,6 @@ var Magic = exports.Magic = function Magic(app) {
     req.app = app;
     next();
   });
-
-  if (babelConfig) {
-    app.use('/js/', (0, _babelMiddleware2.default)(babelConfig));
-  }
 
   // set expiry headers
   app.use(_headers2.default);
@@ -149,6 +144,11 @@ var Magic = exports.Magic = function Magic(app) {
     maxage: '1d',
     compile: cssMiddleware
   }));
+
+  if (_expressBabelifyMiddleware2.default) {
+    // Precompile a browserified file at a path
+    app.use('/js/bundle.js', (0, _expressBabelifyMiddleware2.default)('js/bundle/index.js'));
+  }
 
   app.use(_express2.default.static((0, _path.join)(__dirname, 'public'), { maxAge: '1w' }));
 

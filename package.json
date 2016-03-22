@@ -6,11 +6,11 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "async": "2.0.0-rc.1",
-    "babel-middleware": "0.3.4",
     "body-parser": "1.15.0",
     "compression": "1.6.1",
     "cookie-parser": "1.4.1",
     "express": "4.13.4",
+    "express-babelify-middleware": "0.2.1",
     "jade": "1.11.0",
     "magic-server-log": "github:magic/server-log",
     "magic-types": "github:magic/types",
