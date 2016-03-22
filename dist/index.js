@@ -94,6 +94,7 @@ var Magic = exports.Magic = function Magic(app) {
   var basicAuthConfig = app.get('basicAuth');
   var port = app.get('port') || 5000;
   var viewEngine = app.get('view engine') || 'jade';
+  var babelifyFiles = app.get('babelifyFiles');
 
   var dirs = _extends({
     root: dir,
@@ -145,9 +146,14 @@ var Magic = exports.Magic = function Magic(app) {
     compile: cssMiddleware
   }));
 
-  if (_expressBabelifyMiddleware2.default) {
-    // Precompile a browserified file at a path
-    app.use('/js/bundle.js', (0, _expressBabelifyMiddleware2.default)('js/bundle/index.js'));
+  if ((0, _magicTypes.isArray)(babelifyFiles)) {
+    babelifyFiles.forEach(function (f) {
+      // Precompile a browserified file at a path
+      var fileUrl = '/js/' + f + '.js';
+      var bundleUrl = 'js/' + f + '/index.js';
+
+      app.use(fileUrl, (0, _expressBabelifyMiddleware2.default)(bundleUrl));
+    });
   }
 
   app.use(_express2.default.static((0, _path.join)(__dirname, 'public'), { maxAge: '1w' }));

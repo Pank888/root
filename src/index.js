@@ -36,6 +36,7 @@ export const Magic = (app) => {
   const basicAuthConfig = app.get('basicAuth');
   const port = app.get('port') || 5000;
   const viewEngine = app.get('view engine') || 'jade';
+  const babelifyFiles = app.get('babelifyFiles');
 
   const dirs = {
     root: dir,
@@ -93,9 +94,20 @@ export const Magic = (app) => {
     compile: cssMiddleware,
   }));
 
-  if (babelify) {
-    // Precompile a browserified file at a path
-    app.use('/js/bundle.js', babelify('js/bundle/index.js'));
+  if (isString(babelifyFiles) || isArray(babelifyFiles)) {
+    if (isString(babelifyFiles) {
+      babelifyFiles = [babelifyFiles];
+    }
+
+    babelifyFiles.forEach(
+      f => {
+        // Precompile a browserified file at a path
+        const fileUrl = `/js/${f}.js`;
+        const bundleUrl = `js/${f}/index.js`;
+
+        app.use(fileUrl, babelify(bundleUrl));
+      }
+    );
   }
 
   app.use(express.static(join(__dirname, 'public'), { maxAge: '1w' }));
