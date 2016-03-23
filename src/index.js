@@ -23,7 +23,23 @@ import handle500 from './errors/handle500';
 // import blog from 'magic-blog';
 // import db from 'magic-db';
 
-export const Magic = (app) => {
+export const conjure =
+  (config = {}) => {
+    const app = express();
+
+    if (!isObject(config)) {
+      throw new Error('config has to be an object');
+    }
+
+    Object.keys(config).forEach(
+      key =>
+        app.set(key, config[key])
+    );
+
+    return app;
+  };
+
+export const Magic = app => {
   const dir = app.get('cwd') || process.cwd();
   const css = app.get('css') || stylus;
   // const dbSettings = app.get('dbOpts') || false;
