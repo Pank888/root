@@ -205,3 +205,5 @@ export const Magic = app => {
 
   return app;
 };
+
+export default Magic;
