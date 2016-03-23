@@ -78,17 +78,17 @@ function run() {
 }
 
 function help() {
-  echo " \n\
-make [task] \n\
-\n\
-running make without task starts a dev env \n\
-\n\
-dev      - start dev env \n\
-build    - build library \n\
-clean    - remove build library and test files \n\
-lint     - eslint javascript sources \n\
-lint-fix - eslint and fix javascript sources \n\
-test     - run tests \n\
+  echo "
+make [task]
+
+running make without task starts a dev env
+
+dev      - start dev env
+build    - build library
+clean    - remove build library and test files
+lint     - eslint javascript sources
+lint-fix - eslint and fix javascript sources
+test     - run tests
 "
 }
 
