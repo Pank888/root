@@ -51,7 +51,7 @@ export const Magic = app => {
   const appDirs = app.get('dirs');
   const basicAuthConfig = app.get('basicAuth');
   const port = app.get('port') || 5000;
-  const viewEngine = app.get('view engine') || 'jade';
+  const viewEngine = app.get('view engine') || 'pug';
   const babelifyFiles = app.get('babelifyFiles');
 
   const dirs = {

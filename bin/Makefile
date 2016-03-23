@@ -8,6 +8,7 @@ CLI:=./node_modules/magic-root/bin/cli.sh
 	lint \
 	lint-fix \
 	jade-lint \
+	pug-lint \
 	stylint \
 	rm \
 	run
@@ -30,7 +31,10 @@ lint-fix:
 	@${CLI} lint-fix
 
 jade-lint:
-	@${CLI} jade-lint
+	@${CLI} pug-lint
+
+pug-lint:
+	@${CLI} pug-lint
 
 stylint:
 	@${CLI} stylint

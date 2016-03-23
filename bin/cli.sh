@@ -106,11 +106,11 @@ function lint-fix() {
   echo "lint-fix end"
 }
 
-function jade-lint() {
-  echo "jade-lint start"
-  $NODE_BIN/jade-lint \
+function pug-lint() {
+  echo "pug-lint start"
+  $NODE_BIN/pug-lint \
     ./src/views/*
-  echo "jade-lint finished"
+  echo "pug-lint finished"
 }
 
 function stylint() {
@@ -153,11 +153,17 @@ make [task]
 
 running make without task starts a dev env
 
+dev       - run dev environment
+build-src - build express app
+lint      - eslint javascript sources
+lint-fix  - eslint and fix javascript sources
+pug-lint  - run pug-lint (html)
+jade-lint - run pug-lint (html)
+stylint   - run stylint (css)
+
 build     - build docker container
 run       - run docker container
 clean     - remove build library and test files
-lint      - eslint javascript sources
-lint-fix  - eslint and fix javascript sources
 debug     - connect to a debug container
 logs      - tail the logs of the running container
 clean     - remove out dir
