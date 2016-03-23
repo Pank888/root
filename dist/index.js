@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Magic = undefined;
+exports.Magic = exports.conjure = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -80,6 +80,22 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';
 // import db from 'magic-db';
+
+var conjure = exports.conjure = function conjure() {
+  var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
+  var app = (0, _express2.default)();
+
+  if (!(0, _magicTypes.isObject)(config)) {
+    throw new Error('config has to be an object');
+  }
+
+  Object.keys(config).forEach(function (key) {
+    return app.set(key, config[key]);
+  });
+
+  return app;
+};
 
 var Magic = exports.Magic = function Magic(app) {
   var dir = app.get('cwd') || process.cwd();
@@ -237,4 +253,6 @@ var Magic = exports.Magic = function Magic(app) {
 
   return app;
 };
+
+exports.default = Magic;
 //# sourceMappingURL=index.js.map
