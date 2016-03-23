@@ -10,18 +10,30 @@ NODEJS_OUT_FILE=${NODEJS_OUT_FILE:-"out/index.js"}
 
 OUT_DIR=${OUT_DIR:-out}
 
+function dev() {
+  echo "start dev environment"
+
+  nodemon \
+    --exec "make lint && make build-src && node out/index.js" \
+    --ignore public/js
+}
+
 function build() {
   echo "start building $CONTAINER_NAME docker container"
 
-  build-browser-js
-  build-node-js
-  build-express-dirs
+  build-src
 
   docker build \
   --tag $CONTAINER_NAME \
     . # dot!
 
   echo "finished building docker container"
+}
+
+function build-src() {
+  build-browser-js
+  build-node-js
+  build-express-dirs
 }
 
 function build-browser-js() {

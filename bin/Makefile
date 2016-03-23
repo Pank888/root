@@ -2,17 +2,26 @@ CLI:=./node_modules/magic-root/bin/cli.sh
 
 .PHONY: \
 	all \
+	dev \
 	build \
 	clean \
 	lint \
 	lint-fix \
+	jade-lint \
+	stylint \
 	rm \
 	run
 
 all: help
 
+dev:
+	${CLI} dev
+
 build:
 	@${CLI} build
+
+build-src:
+	@${CLI} build-src
 
 lint:
 	@${CLI} lint
