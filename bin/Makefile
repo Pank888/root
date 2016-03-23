@@ -20,6 +20,12 @@ lint:
 lint-fix:
 	@${CLI} lint-fix
 
+jade-lint:
+	@${CLI} jade-lint
+
+stylint:
+	@${CLI} stylint
+
 clean:
 	@${CLI} clean
 

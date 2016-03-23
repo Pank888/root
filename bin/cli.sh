@@ -3,7 +3,9 @@
 NODE_BIN=${NODE_BIN:-node_modules/.bin}
 CONTAINER_NAME=${CONTAINER_NAME:-magic-localhost}
 JS_ROOT_DIR=${JS_ROOT_DIR:-src/js}
+MAGIC_DIR=${MAGIC_DIR:-node_modules/magic-root}
 MAGIC_BIN=${MAGIC_BIN:-node_modules/magic-root/bin}
+MAGIC_NODE_BIN=${MAGIC_NODE_BIN:-node_modules/magic-root/node_modules/.bin}
 NODEJS_SRC_FILES=${NODEJS_FILES:-"src/config.js src/index.js"}
 NODEJS_OUT_FILE=${NODEJS_OUT_FILE:-"out/index.js"}
 
@@ -37,7 +39,7 @@ function build-node-js() {
 
   mkdir -p $OUT_DIR/
 
-  $NODE_BIN/babel \
+  $MAGIC_NODE_BIN/babel \
     --out-file $NODEJS_OUT_FILE \
     $NODEJS_SRC_FILES # order is important
 
@@ -79,18 +81,34 @@ function docker-rm() {
 }
 
 function lint() {
-  echo 'eslint start'
-  $NODE_BIN/eslint \
-    src/H.js src/config.js
-  echo 'eslint done'
+  echo "eslint start"
+  $MAGIC_NODE_BIN/eslint \
+    src
+  echo "eslint done"
 }
 
 function lint-fix() {
-  echo 'lint-fix start'
-  $NODE_BIN/eslint \
+  echo "lint-fix start"
+  $MAGIC_NODE_BIN/eslint \
     --fix \
-    src/H.js src/config.js
-  echo 'lint-fix end'
+    src
+  echo "lint-fix end"
+}
+
+function jade-lint() {
+  echo "jade-lint start"
+  $MAGIC_NODE_BIN/jade-lint \
+    ./src/views/*
+  echo "jade-lint finished"
+}
+
+function stylint() {
+  echo "stylint start"
+
+  $MAGIC_NODE_BIN/stylint \
+    src/public/css
+
+  echo "stylint finished"
 }
 
 function clean() {
