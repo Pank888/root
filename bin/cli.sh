@@ -5,8 +5,8 @@ CONTAINER_NAME=${CONTAINER_NAME:-magic-localhost}
 JS_ROOT_DIR=${JS_ROOT_DIR:-src/js}
 MAGIC_DIR=${MAGIC_DIR:-node_modules/magic-root}
 MAGIC_BIN=${MAGIC_BIN:-node_modules/magic-root/bin}
-NODEJS_SRC_FILES=${NODEJS_FILES:-"src/config.js src/index.js"}
-NODEJS_OUT_FILE=${NODEJS_OUT_FILE:-"out/index.js"}
+NODEJS_SRC_FILES=${NODEJS_FILES:-"src"}
+NODEJS_OUT_DIR=${NODEJS_OUT_DIR:-"out"}
 
 OUT_DIR=${OUT_DIR:-out}
 
@@ -14,8 +14,8 @@ function dev() {
   echo "start dev environment"
 
   nodemon \
-    --exec "make lint && make build-src && node out/index.js" \
-    --ignore public/js
+    --exec "$NODE_BIN/babel-node src/index.js" \
+    --watch ./src
 }
 
 function build() {
@@ -51,7 +51,7 @@ function build-node-js() {
   mkdir -p $OUT_DIR/
 
   $NODE_BIN/babel \
-    --out-file $NODEJS_OUT_FILE \
+    --out-dir $NODEJS_OUT_DIR \
     $NODEJS_SRC_FILES # order is important
 
   echo "finished building nodejs"
