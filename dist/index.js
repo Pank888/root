@@ -82,19 +82,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import db from 'magic-db';
 
 var conjure = exports.conjure = function conjure() {
-  var config = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-  var app = (0, _express2.default)();
-
-  if (!(0, _magicTypes.isObject)(config)) {
-    throw new Error('config has to be an object');
-  }
-
-  Object.keys(config).forEach(function (key) {
-    return app.set(key, config[key]);
-  });
-
-  return app;
+  return (0, _express2.default)();
 };
 
 var Magic = exports.Magic = function Magic(app) {
@@ -103,14 +91,14 @@ var Magic = exports.Magic = function Magic(app) {
   // const dbSettings = app.get('dbOpts') || false;
   var routes = app.get('router');
   var env = app.get('env') || 'production';
-  var faviconPath = (0, _path.join)(dir, 'public', 'favicon.ico');
   var publicDir = app.get('publicDir') || 'public';
   var viewDir = app.get('viewDir') || 'views';
   var appDirs = app.get('dirs');
   var basicAuthConfig = app.get('basicAuth');
-  var port = app.get('port') || 5000;
-  var viewEngine = app.get('view engine') || 'jade';
+  var port = app.get('port') || 1337;
+  var viewEngine = app.get('view engine') || 'pug';
   var babelifyFiles = app.get('babelifyFiles');
+  var logLevel = app.get('logLevel') || 'combined';
 
   var dirs = _extends({
     root: dir,
@@ -118,7 +106,7 @@ var Magic = exports.Magic = function Magic(app) {
     views: (0, _path.join)(dir, viewDir)
   }, appDirs);
 
-  console.log({ dirs: dirs, env: env });
+  var faviconPath = (0, _path.join)(dirs.public, 'favicon.ico');
 
   app.set('css', css);
   app.set('dirs', dirs);
@@ -138,7 +126,7 @@ var Magic = exports.Magic = function Magic(app) {
   }
 
   // fs.existsSync only gets called once on first request
-  if (!app.get('faviconChecked') && !app.get('faviconExists')) {
+  if (faviconPath && !app.get('faviconChecked') && !app.get('faviconExists')) {
     app.set('faviconChecked', true);
     app.set('faviconExists', _fs2.default.existsSync(faviconPath));
   }
@@ -166,7 +154,7 @@ var Magic = exports.Magic = function Magic(app) {
     [].concat(babelifyFiles).forEach(function (f) {
       // Precompile a browserified file at a path
       var fileUrl = '/js/' + f + '.js';
-      var bundleUrl = 'js/' + f + '/index.js';
+      var bundleUrl = dirs.public + '/js/' + f + '/index.js';
 
       app.use(fileUrl, (0, _expressBabelifyMiddleware2.default)(bundleUrl));
     });
@@ -199,8 +187,6 @@ var Magic = exports.Magic = function Magic(app) {
    app.use(blogRoot, blog);
    }
    */
-
-  var logLevel = app.get('logLevel') || 'combined';
 
   // logging
   app.use((0, _morgan2.default)(logLevel));

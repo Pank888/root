@@ -24,20 +24,8 @@ import handle500 from './errors/handle500';
 // import db from 'magic-db';
 
 export const conjure =
-  (config = {}) => {
-    const app = express();
-
-    if (!isObject(config)) {
-      throw new Error('config has to be an object');
-    }
-
-    Object.keys(config).forEach(
-      key =>
-        app.set(key, config[key])
-    );
-
-    return app;
-  };
+  () =>
+    express();
 
 export const Magic = app => {
   const dir = app.get('cwd') || process.cwd();
@@ -45,14 +33,14 @@ export const Magic = app => {
   // const dbSettings = app.get('dbOpts') || false;
   const routes = app.get('router');
   const env = app.get('env') || 'production';
-  const faviconPath = join(dir, 'public', 'favicon.ico');
   const publicDir = app.get('publicDir') || 'public';
   const viewDir = app.get('viewDir') || 'views';
   const appDirs = app.get('dirs');
   const basicAuthConfig = app.get('basicAuth');
-  const port = app.get('port') || 5000;
+  const port = app.get('port') || 1337;
   const viewEngine = app.get('view engine') || 'pug';
   const babelifyFiles = app.get('babelifyFiles');
+  const logLevel = app.get('logLevel') || 'combined';
 
   const dirs = {
     root: dir,
@@ -61,7 +49,7 @@ export const Magic = app => {
     ...appDirs,
   };
 
-  console.log({ dirs, env });
+  const faviconPath = join(dirs.public, 'favicon.ico');
 
   app.set('css', css);
   app.set('dirs', dirs);
@@ -82,7 +70,7 @@ export const Magic = app => {
   }
 
   // fs.existsSync only gets called once on first request
-  if (!app.get('faviconChecked') && !app.get('faviconExists')) {
+  if (faviconPath && !app.get('faviconChecked') && !app.get('faviconExists')) {
     app.set('faviconChecked', true);
     app.set('faviconExists', fs.existsSync(faviconPath));
   }
@@ -115,7 +103,7 @@ export const Magic = app => {
       f => {
         // Precompile a browserified file at a path
         const fileUrl = `/js/${f}.js`;
-        const bundleUrl = `js/${f}/index.js`;
+        const bundleUrl = `${dirs.public}/js/${f}/index.js`;
 
         app.use(fileUrl, babelify(bundleUrl));
       }
@@ -149,8 +137,6 @@ export const Magic = app => {
    app.use(blogRoot, blog);
    }
    */
-
-  const logLevel = app.get('logLevel') || 'combined';
 
   // logging
   app.use(morgan(logLevel));
