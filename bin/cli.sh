@@ -23,13 +23,13 @@ function build() {
 
   build-src
 
-  CACHEBUST=`git ls-remote https://github.com:magic/root.git | grep refs/heads/develop | cut -f 1` && \
-  export NODE_ENV=production
+  export CACHEBUST=`git ls-remote git@github.com:magic/root | grep refs/heads/master | cut -f 1`
   echo "building with git hash $CACHEBUST"
 
   docker build \
   --tag $CONTAINER_NAME \
   --build-arg CACHEBUST=$CACHEBUST \
+  --build-arg NODE_ENV=production \
     . # dot!
 
   echo "finished building docker container"
