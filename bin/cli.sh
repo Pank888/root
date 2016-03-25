@@ -13,6 +13,7 @@ OUT_DIR=${OUT_DIR:-out}
 function dev() {
   echo "start dev environment"
 
+  NODE_ENV=development;
   nodemon \
     --exec "$NODE_BIN/babel-node src/index.js" \
     --watch ./src
