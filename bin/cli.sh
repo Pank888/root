@@ -11,6 +11,7 @@ DIST_DIR=${DIST_DIR:-dist}
 
 function dev() {
   echo "start dev environment"
+  build-src
 
   NODE_ENV=development;
   nodemon \
@@ -20,8 +21,6 @@ function dev() {
 
 function build() {
   echo "start building $CONTAINER_NAME docker container"
-
-  build-src
 
   export CACHEBUST=`git ls-remote git@github.com:magic/root | grep refs/heads/master | cut -f 1`
   echo "building with git hash $CACHEBUST"
