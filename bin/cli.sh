@@ -5,9 +5,9 @@ CONTAINER_NAME=${CONTAINER_NAME:-magic-localhost}
 MAGIC_DIR=${MAGIC_DIR:-node_modules/magic-root}
 MAGIC_BIN=${MAGIC_BIN:-node_modules/magic-root/bin}
 NODEJS_SRC_FILES=${NODEJS_FILES:-"src"}
-NODEJS_OUT_DIR=${NODEJS_OUT_DIR:-"out"}
+NODEJS_DIST_DIR=${NODEJS_DIST_DIR:-"dist"}
 
-OUT_DIR=${OUT_DIR:-out}
+DIST_DIR=${DIST_DIR:-dist}
 
 function dev() {
   echo "start dev environment"
@@ -43,10 +43,10 @@ function build-src() {
 function build-node-js() {
   echo "start building nodejs"
 
-  mkdir -p $OUT_DIR/
+  mkdir -p $DIST_DIR/
 
   $NODE_BIN/babel \
-    --out-dir $NODEJS_OUT_DIR \
+    --out-dir $NODEJS_DIST_DIR \
     $NODEJS_SRC_FILES # order is important
 
   echo "finished building nodejs"
@@ -55,11 +55,11 @@ function build-node-js() {
 function build-express-dirs() {
   echo "start copying express views and public dir"
 
-  mkdir -p $OUT_DIR/
+  mkdir -p $DIST_DIR/
 
   cp -r \
     src/public src/views \
-    $OUT_DIR/
+    $DIST_DIR/
 
   echo "finished copying express views and public dir"
 }
@@ -120,7 +120,7 @@ function stylint() {
 function clean() {
   echo "cleaning up out dir"
 
-  rm -rf $OUT_DIR
+  rm -rf $DIST_DIR
 
   echo "cleaning up finished"
 }
