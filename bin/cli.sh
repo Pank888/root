@@ -2,7 +2,6 @@
 
 NODE_BIN=${NODE_BIN:-node_modules/.bin}
 CONTAINER_NAME=${CONTAINER_NAME:-magic-localhost}
-JS_ROOT_DIR=${JS_ROOT_DIR:-src/js}
 MAGIC_DIR=${MAGIC_DIR:-node_modules/magic-root}
 MAGIC_BIN=${MAGIC_BIN:-node_modules/magic-root/bin}
 NODEJS_SRC_FILES=${NODEJS_FILES:-"src"}
@@ -24,26 +23,21 @@ function build() {
 
   build-src
 
+  CACHEBUST=`git ls-remote https://github.com:magic/root.git | grep refs/heads/develop | cut -f 1` && \
+  export NODE_ENV=production
+  echo "building with git hash $CACHEBUST"
+
   docker build \
   --tag $CONTAINER_NAME \
+  --build-arg CACHEBUST=$CACHEBUST \
     . # dot!
 
   echo "finished building docker container"
 }
 
 function build-src() {
-  build-browser-js
   build-node-js
   build-express-dirs
-}
-
-function build-browser-js() {
-  echo "start building javascript bundles"
-
-  mkdir -p $OUT_DIR/js
-
-  cp -r src/js/* $OUT_DIR/js/
-  echo "finished building javascript bundles"
 }
 
 function build-node-js() {
