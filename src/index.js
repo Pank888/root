@@ -45,6 +45,7 @@ export const Magic = app => {
   const viewEngine = app.get('view engine') || 'pug';
   const babelifyFiles = app.get('babelifyFiles');
   const logLevel = app.get('logLevel') || 'combined';
+  const disableViews = app.get('disableViews') || false;
 
   const dirs = {
     root: dir,
@@ -158,11 +159,12 @@ export const Magic = app => {
 
   // load host specific router
   if (routes) {
-    if (isArray(routes) || isObject(routes)) {
+    if (isObject(routes)) {
       Object.keys(routes).forEach(
         key => {
-          if (isFunction(routes[key])) {
-            app.use(routes[key]);
+          const route = routes[key];
+          if (isFunction(route)) {
+            app.get(key, routes[key]);
           }
         }
       );
