@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Magic = exports.router = exports.conjure = undefined;
+exports.Magic = exports.Router = exports.Express = exports.conjure = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -85,7 +85,9 @@ var conjure = exports.conjure = function conjure() {
   return (0, _express2.default)();
 };
 
-var router = exports.router = _express2.default.Router();
+var Express = exports.Express = _express2.default;
+
+var Router = exports.Router = _express2.default.Router();
 
 var Magic = exports.Magic = function Magic(app) {
   var dir = app.get('cwd') || process.cwd();

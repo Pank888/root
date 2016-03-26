@@ -22,4 +22,4 @@ router.get('/', function (req, res) {
 router.get('/:page', _pages.page);
 
 exports.default = router;
-//# sourceMappingURL=router.js.map
+//# sourceMappingURL=routes.js.map
