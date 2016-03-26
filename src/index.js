@@ -27,7 +27,9 @@ export const conjure =
   () =>
     express();
 
-export const router = express.Router();
+export const Express = express;
+
+export const Router = express.Router();
 
 export const Magic = app => {
   const dir = app.get('cwd') || process.cwd();
