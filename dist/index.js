@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Magic = exports.conjure = undefined;
+exports.Magic = exports.router = exports.conjure = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -59,9 +59,9 @@ var _magicServerLog = require('magic-server-log');
 
 var _magicServerLog2 = _interopRequireDefault(_magicServerLog);
 
-var _router = require('./router');
+var _routes = require('./routes');
 
-var _router2 = _interopRequireDefault(_router);
+var _routes2 = _interopRequireDefault(_routes);
 
 var _headers = require('./headers');
 
@@ -84,6 +84,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var conjure = exports.conjure = function conjure() {
   return (0, _express2.default)();
 };
+
+var router = exports.router = _express2.default.Router();
 
 var Magic = exports.Magic = function Magic(app) {
   var dir = app.get('cwd') || process.cwd();
@@ -194,7 +196,7 @@ var Magic = exports.Magic = function Magic(app) {
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
     app.use(_bodyParser2.default.json());
-    app.use(_bodyParser2.default.urlencoded({ extended: false }));
+    app.use(_bodyParser2.default.urlencoded({ extended: true }));
   }
 
   // if host sets cookieparser to true, init it:
@@ -216,7 +218,7 @@ var Magic = exports.Magic = function Magic(app) {
   }
 
   // default router
-  app.use(_router2.default);
+  app.use(_routes2.default);
 
   // we are in a 404 error
   app.use(_handle2.default);
