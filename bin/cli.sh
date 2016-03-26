@@ -22,7 +22,7 @@ function dev() {
 function build() {
   echo "start building $CONTAINER_NAME docker container"
 
-  export CACHEBUST=`git ls-remote git@github.com:magic/root | grep refs/heads/master | cut -f 1`
+  export CACHEBUST=`git ls-remote https://github.com/magic/root.git | grep refs/heads/master | cut -f 1`
   echo "building with git hash $CACHEBUST"
 
   docker build \
