@@ -45,7 +45,6 @@ export const Magic = app => {
   const viewEngine = app.get('view engine') || 'pug';
   const babelifyFiles = app.get('babelifyFiles');
   const logLevel = app.get('logLevel') || 'combined';
-  const disableViews = app.get('disableViews') || false;
 
   const dirs = {
     root: dir,
@@ -167,6 +166,11 @@ export const Magic = app => {
             app.get(key, routes[key]);
           }
         }
+      );
+    } else if (isArray(routes)) {
+      routes.forEach(
+        route =>
+          app.use(route)
       );
     } else if (isFunction(routes)) {
       app.use(routes);

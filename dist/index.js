@@ -208,11 +208,16 @@ var Magic = exports.Magic = function Magic(app) {
 
   // load host specific router
   if (routes) {
-    if ((0, _magicTypes.isArray)(routes) || (0, _magicTypes.isObject)(routes)) {
+    if ((0, _magicTypes.isObject)(routes)) {
       Object.keys(routes).forEach(function (key) {
-        if ((0, _magicTypes.isFunction)(routes[key])) {
-          app.use(routes[key]);
+        var route = routes[key];
+        if ((0, _magicTypes.isFunction)(route)) {
+          app.get(key, routes[key]);
         }
+      });
+    } else if ((0, _magicTypes.isArray)(routes)) {
+      routes.forEach(function (route) {
+        return app.use(route);
       });
     } else if ((0, _magicTypes.isFunction)(routes)) {
       app.use(routes);
