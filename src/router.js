@@ -3,7 +3,7 @@ import { page } from './pages';
 
 const noop = () => {};
 
-var router = Router();
+const router = Router();
 
 router.get('/', (req, res, next = noop) => {
   res.locals.page = 'index';
