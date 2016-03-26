@@ -14,7 +14,7 @@ import nib from 'nib';
 import { isArray, isObject, isFunction, isString } from 'magic-types';
 import log from 'magic-server-log';
 
-import router from './router';
+import appRoutes from './routes';
 import headers from './headers';
 import handle404 from './errors/handle404';
 import handle500 from './errors/handle500';
@@ -26,6 +26,8 @@ import handle500 from './errors/handle500';
 export const conjure =
   () =>
     express();
+
+export const router = express.Router();
 
 export const Magic = app => {
   const dir = app.get('cwd') || process.cwd();
@@ -144,7 +146,7 @@ export const Magic = app => {
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
     app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.urlencoded({ extended: true }));
   }
 
   // if host sets cookieparser to true, init it:
@@ -168,7 +170,7 @@ export const Magic = app => {
   }
 
   // default router
-  app.use(router);
+  app.use(appRoutes);
 
   // we are in a 404 error
   app.use(handle404);
