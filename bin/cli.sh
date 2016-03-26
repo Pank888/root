@@ -13,8 +13,8 @@ function dev() {
   echo "start dev environment"
   build-src
 
-  NODE_ENV=development;
-  nodemon \
+  export NODE_ENV=development;
+  $NODE_BIN/nodemon \
     --exec "$NODE_BIN/babel-node src/index.js" \
     --watch ./src
 }
@@ -90,13 +90,21 @@ function docker-rm() {
 }
 
 function lint() {
+  echo "start lint tasks"
+  eslint
+  jade-lint
+  stylint
+  echo "linting finished"
+}
+
+function eslint() {
   echo "eslint start"
   $NODE_BIN/eslint \
     src
   echo "eslint done"
 }
 
-function lint-fix() {
+function eslint-fix() {
   echo "lint-fix start"
   $NODE_BIN/eslint \
     --fix \
