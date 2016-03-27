@@ -77,18 +77,39 @@ function run() {
   node dist/index.js
 }
 
+function docker-build() {
+  echo "start building magic:root docker image"
+
+  cd ./node_modules/magic-root/ && \
+  docker build \
+    --tag magic:root \
+    . #dot!
+
+  echo "docker magic-root build finished"
+}
+
+function docker-rm() {
+  echo "docker removing magic:root image"
+
+  docker rmi magic:root || echo "image does not exist"
+
+  echo "docker removing magic:root finished"
+}
+
 function help() {
   echo "
 make [task]
 
 running make without task starts a dev env
 
-dev      - start dev env
-build    - build library
-clean    - remove build library and test files
-lint     - eslint javascript sources
-lint-fix - eslint and fix javascript sources
-test     - run tests
+dev          - start dev env
+build        - build library
+clean        - remove build library and test files
+lint         - eslint javascript sources
+lint-fix     - eslint and fix javascript sources
+test         - run tests
+docker-build - build docker image
+docker-rm    - remove docker image
 "
 }
 

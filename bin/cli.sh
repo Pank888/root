@@ -34,6 +34,14 @@ function build() {
   echo "finished building docker container"
 }
 
+function build-root() {
+  echo "start building magic-root"
+
+  ${MAGIC_DIR}/cli.sh docker-build
+
+  echo "finished building magic-root"
+}
+
 function build-src() {
   build-node-js
   build-express-dirs

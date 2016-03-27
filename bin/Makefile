@@ -21,6 +21,9 @@ dev:
 build:
 	@${CLI} build
 
+build-root:
+	@${CLI} build-root
+
 build-src:
 	@${CLI} build-src
 
