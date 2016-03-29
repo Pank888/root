@@ -27,7 +27,6 @@ function build() {
 
   docker build \
   --tag $CONTAINER_NAME \
-  --build-arg CACHEBUST=$CACHEBUST \
   --build-arg NODE_ENV=production \
     . # dot!
 
