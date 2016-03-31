@@ -6,13 +6,28 @@ export const headers =
     const env = app.get('env') || 'production';
     const poweredBy = app.get('X-Powered-By') || 'Magic';
     const maxAge = app.get('maxAge') || 60 * 60 * 24 * 7; // default to 7 days
+    const appHeaders = app.get('headers') || {};
+
+    let headers = {};
 
     if (env !== 'development') {
-      res.set('Cache-Control', `public, max-age=${maxAge}`);
-      res.set('Expires', new Date(Date.now() + (maxAge * 1000)).toUTCString());
+      headers['Expires'] = new Date(Date.now() + (maxAge * 1000)).toUTCString();
+      headers['Cache-Control'] = `public, max-age=${maxAge}`;
     }
 
-    res.set('X-Powered-By', poweredBy);
+    headers['X-Powered-By'] = poweredBy;
+    headers['server'] = poweredBy;
+
+    headers = {
+      ...headers,
+      ...appHeaders,
+    };
+
+    Object.keys(headers).forEach(
+      key =>
+        res.set(key, headers[key])
+    );
+
     next();
   };
 
