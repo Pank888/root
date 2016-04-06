@@ -95,8 +95,8 @@ var Magic = exports.Magic = function Magic(app) {
   // const dbSettings = app.get('dbOpts') || false;
   var routes = app.get('router');
   var env = app.get('env') || 'production';
-  var publicDir = app.get('publicDir') || 'public';
-  var viewDir = app.get('viewDir') || 'views';
+  var publicDir = app.get('publicDir') || (0, _path.join)('client', 'public');
+  var viewDir = app.get('viewDir') || (0, _path.join)('client', 'views');
   var appDirs = app.get('dirs');
   var basicAuthConfig = app.get('basicAuth');
   var port = app.get('port') || 1337;
