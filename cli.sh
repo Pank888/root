@@ -43,6 +43,7 @@ function test() {
   $NODE_BIN/babel \
     src/test/ \
     --out-dir test/
+
   $NODE_BIN/mocha \
     ./test/index.js \
     --reporter spec \
