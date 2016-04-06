@@ -37,8 +37,8 @@ export const Magic = app => {
   // const dbSettings = app.get('dbOpts') || false;
   const routes = app.get('router');
   const env = app.get('env') || 'production';
-  const publicDir = app.get('publicDir') || 'public';
-  const viewDir = app.get('viewDir') || 'views';
+  const publicDir = app.get('publicDir') || join('client', 'public');
+  const viewDir = app.get('viewDir') || join('client', 'views');
   const appDirs = app.get('dirs');
   const basicAuthConfig = app.get('basicAuth');
   const port = app.get('port') || 1337;
