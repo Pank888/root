@@ -32,7 +32,7 @@ export const Express = express;
 export const Router = express.Router();
 
 export const Magic = app => {
-  const dir = app.get('cwd') || process.cwd();
+  const dir = app.get('cwd') || join(process.cwd(), 'src');
   const css = app.get('css') || stylus;
   // const dbSettings = app.get('dbOpts') || false;
   const routes = app.get('router');
