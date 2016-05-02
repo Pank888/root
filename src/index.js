@@ -1,25 +1,25 @@
-import express from 'express';
-import basicAuth from 'node-basicauth';
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
-import compression from 'compression';
-import babelify from 'express-babelify-middleware';
-import fs from 'fs';
-import morgan from 'morgan';
-import winston from 'winston';
-import errorHandler from 'express-error-handler';
-import { join } from 'path';
-import favicon from 'serve-favicon';
-import stylus from 'stylus';
-import nib from 'nib';
+import express from 'express'
+import basicAuth from 'node-basicauth'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
+import compression from 'compression'
+import babelify from 'express-babelify-middleware'
+import fs from 'fs'
+import morgan from 'morgan'
+import winston from 'winston'
+import errorHandler from 'express-error-handler'
+import { join } from 'path'
+import favicon from 'serve-favicon'
+import stylus from 'stylus'
+import nib from 'nib'
 
-import { isArray, isObject, isFunction, isString } from 'magic-types';
-import log from 'magic-server-log';
+import { isArray, isObject, isFunction, isString } from 'magic-types'
+import log from 'magic-server-log'
 
-import appRoutes from './routes';
-import headers from './headers';
-import handle404 from './errors/handle404';
-import handle500 from './errors/handle500';
+import appRoutes from './routes'
+import headers from './headers'
+import handle404 from './errors/handle404'
+import handle500 from './errors/handle500'
 
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';
@@ -27,73 +27,73 @@ import handle500 from './errors/handle500';
 
 export const conjure =
   () =>
-    express();
+    express()
 
-export const Express = express;
+export const Express = express
 
-export const Router = express.Router();
+export const Router = express.Router()
 
 export const Magic = app => {
-  const dir = app.get('cwd') || join(process.cwd(), 'src');
-  const css = app.get('css') || stylus;
+  const dir = app.get('cwd') || join(process.cwd(), 'src')
+  const css = app.get('css') || stylus
   // const dbSettings = app.get('dbOpts') || false;
-  const routes = app.get('router');
-  const env = app.get('env') || 'production';
-  const publicDir = app.get('publicDir') || join('client', 'public');
-  const viewDir = app.get('viewDir') || join('client', 'views');
-  const appDirs = app.get('dirs');
-  const basicAuthConfig = app.get('basicAuth');
-  const port = app.get('port') || 1337;
-  const viewEngine = app.get('view engine') || 'pug';
-  const babelifyFiles = app.get('babelifyFiles');
-  const logLevel = app.get('logLevel') || 'combined';
+  const routes = app.get('router')
+  const env = app.get('env') || 'production'
+  const publicDir = app.get('publicDir') || join('client', 'public')
+  const viewDir = app.get('viewDir') || join('client', 'views')
+  const appDirs = app.get('dirs')
+  const basicAuthConfig = app.get('basicAuth')
+  const port = app.get('port') || 1337
+  const viewEngine = app.get('view engine') || 'pug'
+  const babelifyFiles = app.get('babelifyFiles')
+  const logLevel = app.get('logLevel') || 'combined'
   const dirs = {
     root: dir,
     public: join(dir, publicDir),
     views: join(dir, viewDir),
     ...appDirs,
-  };
+  }
 
   const logFiles = {
     access: join(dir, 'logs', 'access.log'),
     error: join(dir, 'logs', 'error.log'),
     ...app.get('logFiles'),
-  };
+  }
 
-  const faviconPath = join(dirs.public, 'favicon.ico');
+  const faviconPath = join(dirs.public, 'favicon.ico')
 
-  app.set('css', css);
-  app.set('dirs', dirs);
+  app.set('css', css)
+  app.set('dirs', dirs)
 
   // set req.app to use in middleware
   app.use(
     (req, res, next) => {
-      req.app = app;
-      next();
-    });
+      req.app = app
+      next()
+    })
 
   // set expiry headers
-  app.use(headers);
+  app.use(headers)
 
   // enable http basicAuth
   if (basicAuthConfig) {
-    app.use(basicAuth(basicAuthConfig));
+    app.use(basicAuth(basicAuthConfig))
   }
 
   // fs.existsSync only gets called once on first request
   if (faviconPath && !app.get('faviconChecked') && !app.get('faviconExists')) {
-    app.set('faviconChecked', true);
-    app.set('faviconExists', fs.existsSync(faviconPath));
+    app.set('faviconChecked', true)
+    app.set('faviconExists', fs.existsSync(faviconPath))
   }
 
   if (app.get('faviconExists')) {
-    app.use(favicon(faviconPath));
+    app.use(favicon(faviconPath))
   }
 
-  app.set('views', dirs.views);
-  app.set('view engine', viewEngine);
+  app.set('views', dirs.views)
+  app.set('view engine', viewEngine)
 
-  app.use(compression({ threshold: 128 }));
+  app.use(compression({ threshold: 128 }))
 
   const cssMiddleware =
     (str, path) =>
@@ -101,29 +101,29 @@ export const Magic = app => {
         .set('filename', path)
         .set('compress', env === 'production')
         .use(nib())
-        .import('nib');
+        .import('nib')
 
   app.use(css.middleware({
     src: dirs.public,
     maxage: '1d',
     compile: cssMiddleware,
-  }));
+  }))
 
   if (isString(babelifyFiles) || isArray(babelifyFiles)) {
     [].concat(babelifyFiles).forEach(
       f => {
         // Precompile a browserified file at a path
-        const fileUrl = `/js/${f}.js`;
-        const bundleUrl = `${dirs.public}/js/${f}/index.js`;
+        const fileUrl = `/js/${f}.js`
+        const bundleUrl = `${dirs.public}/js/${f}/index.js`
 
-        app.use(fileUrl, babelify(bundleUrl));
+        app.use(fileUrl, babelify(bundleUrl))
       }
-    );
+    )
   }
 
-  app.use(express.static(join(__dirname, 'public'), { maxAge: '1w' }));
+  app.use(express.static(join(__dirname, 'public'), { maxAge: '1w' }))
 
-  app.use(express.static(dirs.public, { maxAge: '1d' }));
+  app.use(express.static(dirs.public, { maxAge: '1d' }))
 
   // if (dbSettings && !app.get('db')) {
   //   app.use(db);
@@ -150,37 +150,37 @@ export const Magic = app => {
    */
 
   // logging
-  app.use(morgan(logLevel));
+  app.use(morgan(logLevel))
 
   app.use(
     app.get('env') === 'development'
       ? errorHandler({ dumpExceptions: true, showStack: true })
       : errorHandler()
-  );
+  )
 
   if (logFiles) {
     if (logFiles.access) {
       winston.add(winston.transports.File, {
         filename: logFiles.access,
-      });
+      })
     }
 
     if (logFiles.error) {
       winston.handleExceptions(new winston.transports.File({
         filename: logFiles.error,
-      }));
+      }))
     }
   }
 
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
-    app.use(bodyParser.json());
-    app.use(bodyParser.urlencoded({ extended: true }));
+    app.use(bodyParser.json())
+    app.use(bodyParser.urlencoded({ extended: true }))
   }
 
   // if host sets cookieparser to true, init it:
   if (app.enabled('cookieParser')) {
-    app.use(cookieParser());
+    app.use(cookieParser())
   }
 
   // load host specific router
@@ -188,45 +188,45 @@ export const Magic = app => {
     if (isObject(routes)) {
       Object.keys(routes).forEach(
         key => {
-          const route = routes[key];
+          const route = routes[key]
           if (isFunction(route)) {
-            app.get(key, routes[key]);
+            app.get(key, routes[key])
           }
         }
-      );
+      )
     } else if (isArray(routes)) {
       routes.forEach(
         route =>
           app.use(route)
-      );
+      )
     } else if (isFunction(routes)) {
-      app.use(routes);
+      app.use(routes)
     }
   }
 
   // default router
-  app.use(appRoutes);
+  app.use(appRoutes)
 
   // we are in a 404 error
-  app.use(handle404);
+  app.use(handle404)
 
   // oops, worst case fallback, 500 server error.
-  app.use(handle500);
+  app.use(handle500)
 
   app.get('*', (req, res, next) => {
-    console.log('catchall');
-    res.status(200).send('yay');
-  });
+    console.log('catchall')
+    res.status(200).send('yay')
+  })
 
   app.listen(port, err => {
     if (err) {
-      log.error(err);
+      log.error(err)
     }
 
-    log(`app listening to port ${port}`);
-  });
+    log(`app listening to port ${port}`)
+  })
 
-  return app;
-};
+  return app
+}
 
-export default Magic;
+export default Magic

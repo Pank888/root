@@ -1,15 +1,15 @@
-import { Router } from 'express';
-import { page } from './pages';
+import { Router } from 'express'
+import { page } from './pages'
 
-const noop = () => {};
+const noop = () => {}
 
-const router = Router();
+const router = Router()
 
 router.get('/', (req, res, next = noop) => {
-  res.locals.page = 'index';
-  page(req, res, next);
-});
+  res.locals.page = 'index'
+  page(req, res, next)
+})
 
-router.get('/:page', page);
+router.get('/:page', page)
 
-export default router;
+export default router
