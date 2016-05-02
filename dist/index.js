@@ -39,6 +39,14 @@ var _morgan = require('morgan');
 
 var _morgan2 = _interopRequireDefault(_morgan);
 
+var _winston = require('winston');
+
+var _winston2 = _interopRequireDefault(_winston);
+
+var _expressErrorHandler = require('express-error-handler');
+
+var _expressErrorHandler2 = _interopRequireDefault(_expressErrorHandler);
+
 var _path = require('path');
 
 var _serveFavicon = require('serve-favicon');
@@ -90,7 +98,7 @@ var Express = exports.Express = _express2.default;
 var Router = exports.Router = _express2.default.Router();
 
 var Magic = exports.Magic = function Magic(app) {
-  var dir = app.get('cwd') || process.cwd();
+  var dir = app.get('cwd') || (0, _path.join)(process.cwd(), 'src');
   var css = app.get('css') || _stylus2.default;
   // const dbSettings = app.get('dbOpts') || false;
   var routes = app.get('router');
@@ -103,12 +111,16 @@ var Magic = exports.Magic = function Magic(app) {
   var viewEngine = app.get('view engine') || 'pug';
   var babelifyFiles = app.get('babelifyFiles');
   var logLevel = app.get('logLevel') || 'combined';
-
   var dirs = _extends({
     root: dir,
     public: (0, _path.join)(dir, publicDir),
     views: (0, _path.join)(dir, viewDir)
   }, appDirs);
+
+  var logFiles = _extends({
+    access: (0, _path.join)(dir, 'logs', 'access.log'),
+    error: (0, _path.join)(dir, 'logs', 'error.log')
+  }, app.get('logFiles'));
 
   var faviconPath = (0, _path.join)(dirs.public, 'favicon.ico');
 
@@ -178,22 +190,38 @@ var Magic = exports.Magic = function Magic(app) {
 
   /*
    TODO: reenable
-   if (app.get('blogRoot')) {
-   let blogRoot = app.get('blogRoot');
-   if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
-   blogRoot = 'blog';
-   }
-   if (blogRoot.charAt(0) !== '/') {
-   blogRoot = '/' + blogRoot;
-   } else {
-   app.set('blogRoot', blogRoot.substr(1));
-   }
-   app.use(blogRoot, blog);
-   }
+  if (app.get('blogRoot')) {
+    let blogRoot = app.get('blogRoot');
+    if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
+      blogRoot = 'blog';
+    }
+    if (blogRoot.charAt(0) !== '/') {
+      blogRoot = '/' + blogRoot;
+    } else {
+      app.set('blogRoot', blogRoot.substr(1));
+    }
+    app.use(blogRoot, blog);
+  }
    */
 
   // logging
   app.use((0, _morgan2.default)(logLevel));
+
+  app.use(app.get('env') === 'development' ? (0, _expressErrorHandler2.default)({ dumpExceptions: true, showStack: true }) : (0, _expressErrorHandler2.default)());
+
+  if (logFiles) {
+    if (logFiles.access) {
+      _winston2.default.add(_winston2.default.transports.File, {
+        filename: logFiles.access
+      });
+    }
+
+    if (logFiles.error) {
+      _winston2.default.handleExceptions(new _winston2.default.transports.File({
+        filename: logFiles.error
+      }));
+    }
+  }
 
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
