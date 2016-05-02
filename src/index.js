@@ -6,6 +6,8 @@ import compression from 'compression';
 import babelify from 'express-babelify-middleware';
 import fs from 'fs';
 import morgan from 'morgan';
+import winston from 'winston';
+import errorHandler from 'express-error-handler';
 import { join } from 'path';
 import favicon from 'serve-favicon';
 import stylus from 'stylus';
@@ -45,12 +47,17 @@ export const Magic = app => {
   const viewEngine = app.get('view engine') || 'pug';
   const babelifyFiles = app.get('babelifyFiles');
   const logLevel = app.get('logLevel') || 'combined';
-
   const dirs = {
     root: dir,
     public: join(dir, publicDir),
     views: join(dir, viewDir),
     ...appDirs,
+  };
+
+  const logFiles = {
+    access: join(dir, 'logs', 'access.log'),
+    error: join(dir, 'logs', 'error.log'),
+    ...app.get('logFiles'),
   };
 
   const faviconPath = join(dirs.public, 'favicon.ico');
@@ -128,22 +135,42 @@ export const Magic = app => {
 
   /*
    TODO: reenable
-   if (app.get('blogRoot')) {
-   let blogRoot = app.get('blogRoot');
-   if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
-   blogRoot = 'blog';
-   }
-   if (blogRoot.charAt(0) !== '/') {
-   blogRoot = '/' + blogRoot;
-   } else {
-   app.set('blogRoot', blogRoot.substr(1));
-   }
-   app.use(blogRoot, blog);
-   }
+  if (app.get('blogRoot')) {
+    let blogRoot = app.get('blogRoot');
+    if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
+      blogRoot = 'blog';
+    }
+    if (blogRoot.charAt(0) !== '/') {
+      blogRoot = '/' + blogRoot;
+    } else {
+      app.set('blogRoot', blogRoot.substr(1));
+    }
+    app.use(blogRoot, blog);
+  }
    */
 
   // logging
   app.use(morgan(logLevel));
+
+  app.use(
+    app.get('env') === 'development'
+      ? errorHandler({ dumpExceptions: true, showStack: true })
+      : errorHandler()
+  );
+
+  if (logFiles) {
+    if (logFiles.access) {
+      winston.add(winston.transports.File, {
+        filename: logFiles.access,
+      });
+    }
+
+    if (logFiles.error) {
+      winston.handleExceptions(new winston.transports.File({
+        filename: logFiles.error,
+      }));
+    }
+  }
 
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
