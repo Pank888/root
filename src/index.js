@@ -26,6 +26,8 @@ import handle500 from './errors/handle500'
 
 export Nedb from 'nedb'
 
+export { Mailgun } from 'mailgun'
+
 export { renderPage } from './pages'
 
 export const conjure =
