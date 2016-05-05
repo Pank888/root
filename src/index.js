@@ -13,7 +13,7 @@ import favicon from 'serve-favicon'
 import stylus from 'stylus'
 import nib from 'nib'
 
-import { isArray, isObject, isFunction, isString } from 'magic-types'
+import { isArray, isFunction, isString, isIterable } from 'magic-types'
 import log from 'magic-server-log'
 
 import appRoutes from './routes'
@@ -23,7 +23,10 @@ import handle500 from './errors/handle500'
 
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';
-// import db from 'magic-db';
+
+export Nedb from 'nedb'
+
+export { renderPage } from './pages'
 
 export const conjure =
   () =>
@@ -31,13 +34,23 @@ export const conjure =
 
 export const Express = express
 
-export const Router = express.Router()
+export const Router = express.Router
+
+const start =
+  ({ app, port }) => {
+    app.listen(port, err => {
+      if (err) {
+        log.error(err)
+      }
+
+      log(`app listening to port ${port}`)
+    })
+  }
 
 export const Magic = app => {
   const dir = app.get('cwd') || join(process.cwd(), 'src')
   const css = app.get('css') || stylus
-  // const dbSettings = app.get('dbOpts') || false;
-  const routes = app.get('router')
+  const routes = app.get('routes')
   const env = app.get('env') || 'production'
   const publicDir = app.get('publicDir') || join('client', 'public')
   const viewDir = app.get('viewDir') || join('client', 'views')
@@ -125,10 +138,6 @@ export const Magic = app => {
 
   app.use(express.static(dirs.public, { maxAge: '1d' }))
 
-  // if (dbSettings && !app.get('db')) {
-  //   app.use(db);
-  // }
-
   // if (app.enabled('admin')) {
   //   app.use(initAdmin);
   // }
@@ -185,21 +194,30 @@ export const Magic = app => {
 
   // load host specific router
   if (routes) {
-    if (isObject(routes)) {
+    if (isIterable(routes)) {
       Object.keys(routes).forEach(
         key => {
           const route = routes[key]
-          if (isFunction(route)) {
-            app.get(key, routes[key])
+          const { path, handler, method = 'get' } = routes[key]
+
+          const isValidMethod = ['get', 'post'].some(v => v === method)
+          if (!isValidMethod) {
+            throw new Error(`Route method of type ${method} is not valid`)
           }
+
+          if (!isString(path)) {
+            throw new Error(`Route needs a path string to work ${route}`)
+          }
+
+          if (!isFunction(handler)) {
+            throw new Error(`Route needs a handler function to work ${route}`)
+          }
+
+          app[method](path, handler)
         }
       )
-    } else if (isArray(routes)) {
-      routes.forEach(
-        route =>
-          app.use(route)
-      )
-    } else if (isFunction(routes)) {
+    }
+    else if (isFunction(routes)) {
       app.use(routes)
     }
   }
@@ -213,18 +231,7 @@ export const Magic = app => {
   // oops, worst case fallback, 500 server error.
   app.use(handle500)
 
-  app.get('*', (req, res, next) => {
-    console.log('catchall')
-    res.status(200).send('yay')
-  })
-
-  app.listen(port, err => {
-    if (err) {
-      log.error(err)
-    }
-
-    log(`app listening to port ${port}`)
-  })
+  start({ app, port })
 
   return app
 }
