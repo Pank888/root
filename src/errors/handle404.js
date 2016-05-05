@@ -1,5 +1,5 @@
 import log from 'magic-server-log'
-import { page } from '../pages'
+import { renderPage } from '../pages'
 
 const noop = () => {}
 
@@ -19,7 +19,7 @@ export const handle404 =
     req.params.page = p404
     res.status(404)
 
-    page(req, res, err => {
+    renderPage(req, res, err => {
       if (err) {
         log.error(`404 page template for host: ${req.hostname} not found`)
         return next(err)
