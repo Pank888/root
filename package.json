@@ -18,6 +18,7 @@
     "express-error-handler": "1.1.0",
     "magic-server-log": "github:magic/server-log",
     "magic-types": "github:magic/types",
+    "mailgun": "0.5.0",
     "morgan": "1.7.0",
     "nedb": "1.8.0",
     "nib": "1.1.0",
