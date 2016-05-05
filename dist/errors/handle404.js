@@ -32,7 +32,7 @@ var handle404 = exports.handle404 = function handle404(req, res) {
   req.params.page = p404;
   res.status(404);
 
-  (0, _pages.page)(req, res, function (err) {
+  (0, _pages.renderPage)(req, res, function (err) {
     if (err) {
       _magicServerLog2.default.error('404 page template for host: ' + req.hostname + ' not found');
       return next(err);

@@ -3,9 +3,30 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Magic = exports.Router = exports.Express = exports.conjure = undefined;
+exports.Magic = exports.Router = exports.Express = exports.conjure = exports.renderPage = exports.Mailgun = exports.Nedb = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+// import { init as initAdmin } from 'magic-admin';
+// import blog from 'magic-blog';
+
+var _mailgun = require('mailgun');
+
+Object.defineProperty(exports, 'Mailgun', {
+  enumerable: true,
+  get: function get() {
+    return _mailgun.Mailgun;
+  }
+});
+
+var _pages = require('./pages');
+
+Object.defineProperty(exports, 'renderPage', {
+  enumerable: true,
+  get: function get() {
+    return _pages.renderPage;
+  }
+});
 
 var _express = require('express');
 
@@ -83,25 +104,38 @@ var _handle3 = require('./errors/handle500');
 
 var _handle4 = _interopRequireDefault(_handle3);
 
+var _nedb = require('nedb');
+
+var _nedb2 = _interopRequireDefault(_nedb);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import { init as initAdmin } from 'magic-admin';
-// import blog from 'magic-blog';
-// import db from 'magic-db';
-
+exports.Nedb = _nedb2.default;
 var conjure = exports.conjure = function conjure() {
   return (0, _express2.default)();
 };
 
 var Express = exports.Express = _express2.default;
 
-var Router = exports.Router = _express2.default.Router();
+var Router = exports.Router = _express2.default.Router;
+
+var start = function start(_ref) {
+  var app = _ref.app;
+  var port = _ref.port;
+
+  app.listen(port, function (err) {
+    if (err) {
+      _magicServerLog2.default.error(err);
+    }
+
+    (0, _magicServerLog2.default)('app listening to port ' + port);
+  });
+};
 
 var Magic = exports.Magic = function Magic(app) {
   var dir = app.get('cwd') || (0, _path.join)(process.cwd(), 'src');
   var css = app.get('css') || _stylus2.default;
-  // const dbSettings = app.get('dbOpts') || false;
-  var routes = app.get('router');
+  var routes = app.get('routes');
   var env = app.get('env') || 'production';
   var publicDir = app.get('publicDir') || (0, _path.join)('client', 'public');
   var viewDir = app.get('viewDir') || (0, _path.join)('client', 'views');
@@ -180,10 +214,6 @@ var Magic = exports.Magic = function Magic(app) {
 
   app.use(_express2.default.static(dirs.public, { maxAge: '1d' }));
 
-  // if (dbSettings && !app.get('db')) {
-  //   app.use(db);
-  // }
-
   // if (app.enabled('admin')) {
   //   app.use(initAdmin);
   // }
@@ -236,16 +266,32 @@ var Magic = exports.Magic = function Magic(app) {
 
   // load host specific router
   if (routes) {
-    if ((0, _magicTypes.isObject)(routes)) {
+    if ((0, _magicTypes.isIterable)(routes)) {
       Object.keys(routes).forEach(function (key) {
         var route = routes[key];
-        if ((0, _magicTypes.isFunction)(route)) {
-          app.get(key, routes[key]);
+        var _routes$key = routes[key];
+        var path = _routes$key.path;
+        var handler = _routes$key.handler;
+        var _routes$key$method = _routes$key.method;
+        var method = _routes$key$method === undefined ? 'get' : _routes$key$method;
+
+
+        var isValidMethod = ['get', 'post'].some(function (v) {
+          return v === method;
+        });
+        if (!isValidMethod) {
+          throw new Error('Route method of type ' + method + ' is not valid');
         }
-      });
-    } else if ((0, _magicTypes.isArray)(routes)) {
-      routes.forEach(function (route) {
-        return app.use(route);
+
+        if (!(0, _magicTypes.isString)(path)) {
+          throw new Error('Route needs a path string to work ' + route);
+        }
+
+        if (!(0, _magicTypes.isFunction)(handler)) {
+          throw new Error('Route needs a handler function to work ' + route);
+        }
+
+        app[method](path, handler);
       });
     } else if ((0, _magicTypes.isFunction)(routes)) {
       app.use(routes);
@@ -261,18 +307,7 @@ var Magic = exports.Magic = function Magic(app) {
   // oops, worst case fallback, 500 server error.
   app.use(_handle4.default);
 
-  app.get('*', function (req, res, next) {
-    console.log('catchall');
-    res.status(200).send('yay');
-  });
-
-  app.listen(port, function (err) {
-    if (err) {
-      _magicServerLog2.default.error(err);
-    }
-
-    (0, _magicServerLog2.default)('app listening to port ' + port);
-  });
+  start({ app: app, port: port });
 
   return app;
 };

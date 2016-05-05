@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.page = exports.renderTemplate = undefined;
+exports.renderPage = exports.renderTemplate = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -68,7 +68,7 @@ var getTemplate = function getTemplate(_ref, _ref2) {
   };
 };
 
-var page = exports.page = function page(req, res) {
+var renderPage = exports.renderPage = function renderPage(req, res) {
   var next = arguments.length <= 2 || arguments[2] === undefined ? noop : arguments[2];
 
   var _getTemplate = getTemplate(req, res);
@@ -86,4 +86,6 @@ var page = exports.page = function page(req, res) {
 
   return renderTemplate(res, template, next);
 };
+
+exports.default = renderPage;
 //# sourceMappingURL=pages.js.map
