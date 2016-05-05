@@ -48,7 +48,7 @@ const getTemplate =
     }
   }
 
-export const page =
+export const renderPage =
   (req, res, next = noop) => {
     const { page, template } = getTemplate(req, res)
 
@@ -62,3 +62,5 @@ export const page =
 
     return renderTemplate(res, template, next)
   }
+
+export default renderPage
