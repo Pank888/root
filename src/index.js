@@ -4,22 +4,18 @@ import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import compression from 'compression'
 import babelify from 'express-babelify-middleware'
-import fs from 'fs'
-import morgan from 'morgan'
-import winston from 'winston'
-import errorHandler from 'express-error-handler'
 import { join } from 'path'
-import favicon from 'serve-favicon'
+import favicon from './favicon'
 import stylus from 'stylus'
 import nib from 'nib'
 import Nedb from 'nedb'
 import { Mailgun } from 'mailgun'
 
-import { isArray, isFunction, isString, isIterable } from 'magic-types'
-import log from 'magic-server-log'
+import { isArray, isString } from 'magic-types'
 
-import appRoutes from './routes'
+import appRoutes, { customRoutes } from './routes'
 import initApi from './api'
+import initiateLogging from './logging'
 import headers from './headers'
 import handle404 from './errors/handle404'
 import handle500 from './errors/handle500'
@@ -40,42 +36,57 @@ export const Router = express.Router
 const start =
   ({ app, port }) => {
     app.listen(port, err => {
+      const log = app.get('logger')
       if (err) {
         log.error(err)
       }
 
-      log(`app listening to port ${port}`)
+      log.info(`app listening to port ${port}`)
     })
   }
 
 export const Magic = app => {
   const dir = app.get('cwd') || join(process.cwd(), 'src')
-  const css = app.get('css') || stylus
-  const routes = app.get('routes')
   const env = app.get('env') || 'production'
   const publicDir = app.get('publicDir') || join('client', 'public')
   const viewDir = app.get('viewDir') || join('client', 'views')
+  const logDir = app.get('logDir') || join('..', 'logs')
   const appDirs = app.get('dirs')
   const basicAuthConfig = app.get('basicAuth')
   const port = app.get('port') || 1337
   const viewEngine = app.get('view engine') || 'pug'
   const babelifyFiles = app.get('babelifyFiles')
-  const logLevel = app.get('logLevel') || 'combined'
   const dirs = {
     root: dir,
     public: join(dir, publicDir),
     views: join(dir, viewDir),
+    logs: join(dir, logDir),
     ...appDirs,
   }
+
+  // set req.app and req.db to use in middleware
+  app.use(
+    (req, res, next) => {
+      req.app = app
+      req.db = db
+
+      next()
+    }
+  )
+
   const dbFile = app.get('dbFile') || false
   const mailgunApiKey = app.get('mailgunApiKey') || false
 
-  const apiRoutes = app.get('api')
-  let api
-  if (apiRoutes) {
-    api = initApi(apiRoutes)
-  }
+  app.set('dirs', dirs)
 
+  favicon(app)
+
+  app.set('views', dirs.views)
+  app.set('view engine', viewEngine)
+
+  app.use(compression({ threshold: 128 }))
+
+  // initiate nedb if defined
   let db
   if (dbFile) {
     db = new Nedb({
@@ -85,34 +96,12 @@ export const Magic = app => {
     app.set('db', db)
   }
 
+  // initiate mailgun if defined
   if (mailgunApiKey) {
     app.set('mg', new Mailgun(mailgunApiKey))
   }
 
-  const logFiles = {
-    access: join(dir, 'logs', 'access.log'),
-    error: join(dir, 'logs', 'error.log'),
-    ...app.get('logFiles'),
-  }
-
-  const faviconPath = join(dirs.public, 'favicon.ico')
-
-  app.set('css', css)
-  app.set('dirs', dirs)
-
-  // set req.app and req.db to use in middleware
-  app.use(
-    (req, res, next) => {
-      req = {
-        ...req,
-        app,
-        db,
-      }
-
-      next()
-    })
-
-  // set expiry headers
+  // set expiry and custom headers
   app.use(headers)
 
   // enable http basicAuth
@@ -120,20 +109,8 @@ export const Magic = app => {
     app.use(basicAuth(basicAuthConfig))
   }
 
-  // fs.existsSync only gets called once on first request
-  if (faviconPath && !app.get('faviconChecked') && !app.get('faviconExists')) {
-    app.set('faviconChecked', true)
-    app.set('faviconExists', fs.existsSync(faviconPath))
-  }
-
-  if (app.get('faviconExists')) {
-    app.use(favicon(faviconPath))
-  }
-
-  app.set('views', dirs.views)
-  app.set('view engine', viewEngine)
-
-  app.use(compression({ threshold: 128 }))
+  const css = app.get('css') || stylus
+  app.set('css', css)
 
   const cssMiddleware =
     (str, path) =>
@@ -170,7 +147,7 @@ export const Magic = app => {
   // }
 
   /*
-   TODO: reenable
+  // Blog Middleware
   if (app.get('blogRoot')) {
     let blogRoot = app.get('blogRoot');
     if (typeof blogRoot !== 'string' && typeof blogRoot !== 'number') {
@@ -183,30 +160,9 @@ export const Magic = app => {
     }
     app.use(blogRoot, blog);
   }
-   */
+  */
 
-  // logging
-  app.use(morgan(logLevel))
-
-  app.use(
-    app.get('env') === 'development'
-      ? errorHandler({ dumpExceptions: true, showStack: true })
-      : errorHandler()
-  )
-
-  if (logFiles) {
-    if (logFiles.access) {
-      winston.add(winston.transports.File, {
-        filename: logFiles.access,
-      })
-    }
-
-    if (logFiles.error) {
-      winston.handleExceptions(new winston.transports.File({
-        filename: logFiles.error,
-      }))
-    }
-  }
+  initiateLogging(app)
 
   // if host sets bodyparser to true, init it
   if (app.enabled('bodyParser')) {
@@ -219,38 +175,13 @@ export const Magic = app => {
     app.use(cookieParser())
   }
 
-  if (api) {
-    app.use(api)
+  // initiate api if defined
+  const apiRoutes = app.get('api')
+  if (apiRoutes) {
+    app.use(initApi(apiRoutes))
   }
-  // load host specific router
-  if (routes) {
-    if (isIterable(routes)) {
-      Object.keys(routes).forEach(
-        key => {
-          const route = routes[key]
-          const { path, handler, method = 'get' } = routes[key]
 
-          const isValidMethod = ['get', 'post'].some(v => v === method)
-          if (!isValidMethod) {
-            throw new Error(`Route method of type ${method} is not valid`)
-          }
-
-          if (!isString(path)) {
-            throw new Error(`Route needs a path string to work ${route}`)
-          }
-
-          if (!isFunction(handler)) {
-            throw new Error(`Route needs a handler function to work ${route}`)
-          }
-
-          app[method](path, handler)
-        }
-      )
-    }
-    else if (isFunction(routes)) {
-      app.use(routes)
-    }
-  }
+  customRoutes(app)
 
   // default router
   app.use(appRoutes)
