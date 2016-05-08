@@ -53,7 +53,8 @@ export const initiateLogging =
     app.set('logger', logger)
 
     const logLevel = app.get('logLevel') || 'combined'
-    app.use(morgan(logLevel, { stream: (msg) => logger.info(msg) }))
+    const stream = { write: (msg) => logger.info(msg) }
+    app.use(morgan(logLevel, { stream }))
   }
 
 export default initiateLogging
