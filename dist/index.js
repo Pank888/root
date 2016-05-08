@@ -74,6 +74,10 @@ var _logging = require('./logging');
 
 var _logging2 = _interopRequireDefault(_logging);
 
+var _analytics = require('./analytics');
+
+var _analytics2 = _interopRequireDefault(_analytics);
+
 var _headers = require('./headers');
 
 var _headers2 = _interopRequireDefault(_headers);
@@ -230,6 +234,8 @@ var Magic = exports.Magic = function Magic(app) {
   if (app.enabled('cookieParser')) {
     app.use((0, _cookieParser2.default)());
   }
+
+  (0, _analytics2.default)(app);
 
   // initiate api if defined
   var apiRoutes = app.get('api');

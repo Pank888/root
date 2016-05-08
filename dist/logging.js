@@ -63,9 +63,10 @@ var initiateLogging = exports.initiateLogging = function initiateLogging(app) {
   app.set('logger', logger);
 
   var logLevel = app.get('logLevel') || 'combined';
-  app.use((0, _morgan2.default)(logLevel, { stream: function stream(msg) {
+  var stream = { write: function write(msg) {
       return logger.info(msg);
-    } }));
+    } };
+  app.use((0, _morgan2.default)(logLevel, { stream: stream }));
 };
 
 exports.default = initiateLogging;
