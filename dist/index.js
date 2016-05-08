@@ -3,21 +3,9 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Magic = exports.Router = exports.Express = exports.conjure = exports.renderPage = exports.Mailgun = exports.Nedb = undefined;
+exports.Magic = exports.Router = exports.Express = exports.conjure = exports.renderPage = undefined;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-// import { init as initAdmin } from 'magic-admin';
-// import blog from 'magic-blog';
-
-var _mailgun = require('mailgun');
-
-Object.defineProperty(exports, 'Mailgun', {
-  enumerable: true,
-  get: function get() {
-    return _mailgun.Mailgun;
-  }
-});
 
 var _pages = require('./pages');
 
@@ -82,6 +70,12 @@ var _nib = require('nib');
 
 var _nib2 = _interopRequireDefault(_nib);
 
+var _nedb = require('nedb');
+
+var _nedb2 = _interopRequireDefault(_nedb);
+
+var _mailgun = require('mailgun');
+
 var _magicTypes = require('magic-types');
 
 var _magicServerLog = require('magic-server-log');
@@ -91,6 +85,10 @@ var _magicServerLog2 = _interopRequireDefault(_magicServerLog);
 var _routes = require('./routes');
 
 var _routes2 = _interopRequireDefault(_routes);
+
+var _api = require('./api');
+
+var _api2 = _interopRequireDefault(_api);
 
 var _headers = require('./headers');
 
@@ -104,13 +102,8 @@ var _handle3 = require('./errors/handle500');
 
 var _handle4 = _interopRequireDefault(_handle3);
 
-var _nedb = require('nedb');
-
-var _nedb2 = _interopRequireDefault(_nedb);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-exports.Nedb = _nedb2.default;
 var conjure = exports.conjure = function conjure() {
   return (0, _express2.default)();
 };
@@ -150,6 +143,27 @@ var Magic = exports.Magic = function Magic(app) {
     public: (0, _path.join)(dir, publicDir),
     views: (0, _path.join)(dir, viewDir)
   }, appDirs);
+  var dbFile = app.get('dbFile') || false;
+  var mailgunApiKey = app.get('mailgunApiKey') || false;
+
+  var apiRoutes = app.get('api');
+  var api = void 0;
+  if (apiRoutes) {
+    api = (0, _api2.default)(apiRoutes);
+  }
+
+  var db = void 0;
+  if (dbFile) {
+    db = new _nedb2.default({
+      filename: (0, _path.join)(dir, dbFile),
+      autoload: true
+    });
+    app.set('db', db);
+  }
+
+  if (mailgunApiKey) {
+    app.set('mg', new _mailgun.Mailgun(mailgunApiKey));
+  }
 
   var logFiles = _extends({
     access: (0, _path.join)(dir, 'logs', 'access.log'),
@@ -161,9 +175,13 @@ var Magic = exports.Magic = function Magic(app) {
   app.set('css', css);
   app.set('dirs', dirs);
 
-  // set req.app to use in middleware
+  // set req.app and req.db to use in middleware
   app.use(function (req, res, next) {
-    req.app = app;
+    req = _extends({}, req, {
+      app: app,
+      db: db
+    });
+
     next();
   });
 
@@ -264,6 +282,9 @@ var Magic = exports.Magic = function Magic(app) {
     app.use((0, _cookieParser2.default)());
   }
 
+  if (api) {
+    app.use(api);
+  }
   // load host specific router
   if (routes) {
     if ((0, _magicTypes.isIterable)(routes)) {
