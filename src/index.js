@@ -19,6 +19,7 @@ import { isArray, isFunction, isString, isIterable } from 'magic-types'
 import log from 'magic-server-log'
 
 import appRoutes from './routes'
+import initApi from './api'
 import headers from './headers'
 import handle404 from './errors/handle404'
 import handle500 from './errors/handle500'
@@ -69,11 +70,19 @@ export const Magic = app => {
   const dbFile = app.get('dbFile') || false
   const mailgunApiKey = app.get('mailgunApiKey') || false
 
+  const apiRoutes = app.get('api')
+  let api
+  if (apiRoutes) {
+    api = initApi(apiRoutes)
+  }
+
+  let db
   if (dbFile) {
-    app.set('db', new Nedb({
+    db = new Nedb({
       filename: join(dir, dbFile),
       autoload: true,
-    }))
+    })
+    app.set('db', db)
   }
 
   if (mailgunApiKey) {
@@ -91,10 +100,15 @@ export const Magic = app => {
   app.set('css', css)
   app.set('dirs', dirs)
 
-  // set req.app to use in middleware
+  // set req.app and req.db to use in middleware
   app.use(
     (req, res, next) => {
-      req.app = app
+      req = {
+        ...req,
+        app,
+        db,
+      }
+
       next()
     })
 
@@ -205,6 +219,9 @@ export const Magic = app => {
     app.use(cookieParser())
   }
 
+  if (api) {
+    app.use(api)
+  }
   // load host specific router
   if (routes) {
     if (isIterable(routes)) {
