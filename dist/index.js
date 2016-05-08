@@ -155,7 +155,7 @@ var Magic = exports.Magic = function Magic(app) {
   var db = void 0;
   if (dbFile) {
     db = new _nedb2.default({
-      filename: (0, _path.join)(dir, dbFile),
+      filename: dbFile,
       autoload: true
     });
     app.set('db', db);
