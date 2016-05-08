@@ -12,6 +12,8 @@ import { join } from 'path'
 import favicon from 'serve-favicon'
 import stylus from 'stylus'
 import nib from 'nib'
+import Nedb from 'nedb'
+import { Mailgun } from 'mailgun'
 
 import { isArray, isFunction, isString, isIterable } from 'magic-types'
 import log from 'magic-server-log'
@@ -23,10 +25,6 @@ import handle500 from './errors/handle500'
 
 // import { init as initAdmin } from 'magic-admin';
 // import blog from 'magic-blog';
-
-export Nedb from 'nedb'
-
-export { Mailgun } from 'mailgun'
 
 export { renderPage } from './pages'
 
@@ -67,6 +65,19 @@ export const Magic = app => {
     public: join(dir, publicDir),
     views: join(dir, viewDir),
     ...appDirs,
+  }
+  const dbFile = app.get('dbFile') || false
+  const mailgunApiKey = app.get('mailgunApiKey') || false
+
+  if (dbFile) {
+    app.set('db', new Nedb({
+      filename: join(dir, dbFile),
+      autoload: true,
+    }))
+  }
+
+  if (mailgunApiKey) {
+    app.set('mg', new Mailgun(mailgunApiKey))
   }
 
   const logFiles = {
