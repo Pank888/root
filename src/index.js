@@ -16,6 +16,7 @@ import { isArray, isString } from 'magic-types'
 import appRoutes, { customRoutes } from './routes'
 import initApi from './api'
 import initiateLogging from './logging'
+import analytics from './analytics'
 import headers from './headers'
 import handle404 from './errors/handle404'
 import handle500 from './errors/handle500'
@@ -174,6 +175,8 @@ export const Magic = app => {
   if (app.enabled('cookieParser')) {
     app.use(cookieParser())
   }
+
+  analytics(app)
 
   // initiate api if defined
   const apiRoutes = app.get('api')
