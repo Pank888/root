@@ -134,7 +134,7 @@ export const Magic = app => {
         const fileUrl = `/js/${f}.js`
         const bundleUrl = `${dirs.public}/js/${f}/index.js`
 
-        app.use(fileUrl, babelify(bundleUrl))
+        app.get(fileUrl, babelify(bundleUrl))
       }
     )
   }
