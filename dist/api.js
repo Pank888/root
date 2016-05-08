@@ -27,7 +27,6 @@ var apiCb = function apiCb(err, req, res, next) {
 
 var initApi = exports.initApi = function initApi(apiOptions) {
   Object.keys(apiOptions).forEach(function (routeName) {
-    console.log('rendering route ' + routeName);
     router.post('/' + routeName, function (req, res, next) {
       var _req$body = req.body;
       var body = _req$body === undefined ? {} : _req$body;
