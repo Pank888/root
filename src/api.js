@@ -20,7 +20,6 @@ export const initApi =
   (apiOptions) => {
     Object.keys(apiOptions).forEach(
       (routeName) => {
-        console.log(`rendering route ${routeName}`)
         router.post(
           `/${routeName}`,
           (req, res, next) => {
