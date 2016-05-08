@@ -79,7 +79,7 @@ export const Magic = app => {
   let db
   if (dbFile) {
     db = new Nedb({
-      filename: join(dir, dbFile),
+      filename: dbFile,
       autoload: true,
     })
     app.set('db', db)
